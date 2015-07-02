@@ -9,7 +9,7 @@ gdrate <- function(input, pval) {
     f = f/f[1]
     time <- as.matrix(na.omit(dset$date))
     time = (time - time[1]) + 1
-    #time = (time - time[1])
+    # time = (time - time[1])
     jdta <- data.frame(cbind(time, f))
     colnames(jdta) <- c("time", "f")
     v <- subset(foo, foo$IDmodel == i)
@@ -59,7 +59,8 @@ gdrate <- function(input, pval) {
     legend(lp, ft, col = cc, bty = "n", lty = c(1), lwd = 3, cex = 1.2)
 
     # observed values
-    points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2, cex = 1.5)
+    points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2,
+           cex = 1.5)
     # return(rmse)
   }
 
@@ -282,14 +283,16 @@ gdrate <- function(input, pval) {
             if (isconv == "TRUE") {
               LL <- logLik(outgd)
               AIC <- as.numeric(paste(-2 * LL + 2 * np))
-              AICc <- as.numeric(paste(AIC + 2 * np * (np + 1)/(lm - np - 1)))
+              AICc <- as.numeric(paste(AIC + 2 * np * (np + 1)/(lm - np -
+                                                                  1)))
               q <- data.frame(summary(outgd)$coefficients)
               q$name00 <- name00
               q$parameter <- row.names(q)
               q$modelnames <- fit
               q$sig <- ifelse((q$Pr...t.. < pval), 1, 0)
               sigp <- sum(q$sig)
-              laout <- data.frame(cbind(name00, sigp, np, LL, AIC, AICc, lm))
+              laout <- data.frame(cbind(name00, sigp, np, LL, AIC, AICc,
+                                        lm))
               zaout0 <- merge(zout, laout, by = "name00")
               zcof <- data.frame(q[, c(1:7)])
               zaout <- merge(zaout0, zcof, by = "name00", all = TRUE)
@@ -443,6 +446,21 @@ gdrate <- function(input, pval) {
     return(out9)
   }
 
+  # Function to generate outlist1 (item 1 of four in list for gdrate fx return )
+  genoutlist <- function (x) {
+    y <- data.frame(aggregate(x$name ~ x$calcfinal, data = x, length))
+    colnames(y) <- c("Type", "N")
+    y$Percentage <- round((y$N/sum(y$N)), digits = 2) *
+      100
+    y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
+                             "excluded")
+    olt <- c(paste(foo$fit), "not fit")
+    y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
+    y <- y[, c(4, 5, 1:3)]
+    y <- y[order(y$Group), ]
+    rownames(y) <- NULL
+  }
+
   # models
   foo <- initf()
 
@@ -452,15 +470,7 @@ gdrate <- function(input, pval) {
   # where all input data is excluded cases (insufficient data for analysis)
   if (ip$cont == 0) {
     ol <- data.frame(ip$excluded)
-    outlist1 <- data.frame(aggregate(ol$name ~ ol$calcfinal, data = ol, length))
-    colnames(outlist1) <- c("Type", "N")
-    outlist1$Percentage <- round((outlist1$N/sum(outlist1$N)), digits = 2) * 100
-    outlist1$Group <- ifelse((outlist1$Type %in% paste(foo$fit)), "included", "excluded")
-    olt <- c(paste(foo$fit), "not fit")
-    outlist1$Analyzed <- ifelse((outlist1$Type %in% olt), "yes", "no")
-    outlist1 <- outlist1[, c(4, 5, 1:3)]
-    outlist1 <- outlist1[order(outlist1$Group), ]
-    rownames(outlist1) <- NULL
+    outlist1 <- genoutlist(ol)
 
     ol2 <- ol[, c("name", "numcyc", "calcfinal")]
     colnames(ol2)[2:3] <- c("N", "selectedFit")
@@ -470,8 +480,7 @@ gdrate <- function(input, pval) {
     return(result)
 
   } else {
-    # where analyzable cases in input data
-    # user input table
+    # where analyzable cases in input data user input table
     allinput <- ip$inputdata
 
     # number of nonexcluded cases
@@ -481,11 +490,10 @@ gdrate <- function(input, pval) {
     allconv0 <- checkconv2()
     allconv <- allconv0[(allconv0$selected == allconv0$fit | allconv0$selected ==
                            "not fit"), ]
-    #kep <- c("name", "selected", "IDr")
     kep <- c("name", "selected", "IDr", "N")
     res00 <- unique(allconv[, c(kep)])
 
-
+    # create sets by inclusion and analysis status
     setex <- function() {
 
       all <- res00
@@ -493,9 +501,9 @@ gdrate <- function(input, pval) {
       allm <- all[, c("name", "calcfinal", "N")]
 
       # create empty dataset for if no cases
-      naempty <- function () {
+      naempty <- function() {
         name <- NaN
-        dnone  <- data.frame(cbind(name, calcfinal = NA, N = NaN))
+        dnone <- data.frame(cbind(name, calcfinal = NA, N = NaN))
         dnone$calcfinal <- as.character(dnone$calcfinal)
       }
 
@@ -530,11 +538,10 @@ gdrate <- function(input, pval) {
         excl2 <- naempty()
       }
 
-      # merge analyzed cases with excluded cases not analyzed if existing merge
+      # merge and return list
       all1 <- data.frame(rbind(inc2, nf2, excl2))
-      all2 <- all1[(all1$calcfinal!='NA'), ]
+      all2 <- all1[(all1$calcfinal != "NA"), ]
       row.names(all2) <- NULL
-
       combo <- list(inc1 = inc1, nf = nf, excl1 = excl1, all2 = all2)
       return(combo)
     }
@@ -547,8 +554,8 @@ gdrate <- function(input, pval) {
 
     # plots and output estimates where analyzed cases by inc exc status
     if (inc1 > 0) {
-      # where included cases
-      # create table of estimates for selected fits of analyzed cases
+      # where included cases create table of estimates for selected fits of analyzed
+      # cases
       pEst <- allconv0[allconv0$selected == allconv0$fit, ]
 
       # create dset with finalg/d/phi columns
@@ -614,21 +621,13 @@ gdrate <- function(input, pval) {
       notfit$d <- NaN
       notfit$phi <- NaN
       rescalc <- notfit
-      colnames(rescalc) <- c("name", "N", "type", "selectedFit", "g", "d", "phi")
+      colnames(rescalc) <- c("name", "N", "type", "selectedFit", "g", "d","phi")
       outlist2 <- "no estimates when zero included cases"
       allconv0 <- "no estimates when zero included cases"
     }  #end combos inc1 GT 0 else
 
     # summary by fit/exclusion reason
-    outlist1 <- data.frame(aggregate(all2$name ~ all2$calcfinal, data = all2, length))
-    colnames(outlist1) <- c("Type", "N")
-    outlist1$Percentage <- round((outlist1$N/sum(outlist1$N)), digits = 2) * 100
-    outlist1$Group <- ifelse((outlist1$Type %in% paste(foo$fit)), "included", "excluded")
-    olt <- c(paste(foo$fit), "not fit")
-    outlist1$Analyzed <- ifelse((outlist1$Type %in% olt), "yes", "no")
-    outlist1 <- outlist1[, c(4, 5, 1:3)]
-    outlist1 <- outlist1[order(outlist1$Group), ]
-    rownames(outlist1) <- NULL
+    outlist1 <- genoutlist(all2)
 
     # list to output
     result <- list(allest = allconv0, results = rescalc, models = outlist1, sumstats = outlist2)
