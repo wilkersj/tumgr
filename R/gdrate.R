@@ -1,4 +1,5 @@
 
+
 gdrate <- function(input, pval) {
 
   # Function for given model and dataset
@@ -450,15 +451,15 @@ gdrate <- function(input, pval) {
   genoutlist <- function (x) {
     y <- data.frame(aggregate(x$name ~ x$calcfinal, data = x, length))
     colnames(y) <- c("Type", "N")
-    y$Percentage <- round((y$N/sum(y$N)), digits = 2) *
-      100
+    y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
     y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
-                             "excluded")
+                      "excluded")
     olt <- c(paste(foo$fit), "not fit")
     y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
     y <- y[, c(4, 5, 1:3)]
     y <- y[order(y$Group), ]
     rownames(y) <- NULL
+    return(y)
   }
 
   # models
