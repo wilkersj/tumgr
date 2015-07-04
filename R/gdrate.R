@@ -142,7 +142,6 @@ gdrate <- function(input, pval) {
     x3 <- merge(nameid, input2, by = "name")
 
     countD <- function(i) {
-      # i<-1
       r <- subset(x3, x3$IDm == i)
 
       # time and size initial and last
@@ -228,7 +227,8 @@ gdrate <- function(input, pval) {
       stopMessage <- "NA"
       stopcode <- "NA"
       zout <- cbind(fit, iMod, name00, stopcode, stopMessage, isconv)
-      laout <- cbind(name00, sigp = NaN, np = NaN, LL = NaN, AIC = NaN, AICc = NaN, lm)
+      laout <- cbind(name00, sigp = NaN, np = NaN, LL = NaN, AIC = NaN, AICc = NaN,
+                     lm)
       zaout <- merge(zout, laout, by = "name00")
       zaout
     }
@@ -273,7 +273,6 @@ gdrate <- function(input, pval) {
             outgd <- gdX(input1a, i)
           }, silent = TRUE)
 
-          # cond model being fit
           if (exists("outgd")) {
             z <- outgd$convInfo
             stopcode <- z$stopCode
@@ -354,7 +353,6 @@ gdrate <- function(input, pval) {
       colnames(fmd3)[1:2] <- c("name", "Nobs")
       return(fmd3)
     }
-
 
     ip <- inputprep(input)
     allinput <- ip$inputdata
@@ -450,39 +448,19 @@ gdrate <- function(input, pval) {
     return(out9)
   }
 
-#   # Function to generate outlist1 (item 1 of four in list for gdrate fx return )
-#   genoutlist <- function (x) {
-#     #x<-all2
-#     y <- data.frame(aggregate(x$name ~ x$calcfinal, data = x, length))
-#     colnames(y) <- c("Type", "N")
-#     y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
-#     y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
-#                       "excluded")
-#     olt <- c(paste(foo$fit), "not fit")
-#     y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
-#     y <- y[, c(4, 5, 1:3)]
-#     y <- y[order(y$Group), ]
-#     rownames(y) <- NULL
-#     return(y)
-#   }
-
   # models
   foo <- initf()
 
   # Function to return result list
   generateresults <- function() {
-    # models
-    foo <- initf()
 
-    # Function to generate outlist1 (item 1 of four in list for gdrate fx return )
-    genoutlist <- function (xx) {
-      #x<-all2
-      foo <- initf()
+    # Function to generate outlist1 for gdrate fx return
+    genoutlist <- function(xx) {
+      # foo <- initf()
       y <- data.frame(aggregate(xx$name ~ xx$calcfinal, data = xx, length))
       colnames(y) <- c("Type", "N")
       y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
-      y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
-                        "excluded")
+      y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included", "excluded")
       olt <- c(paste(foo$fit), "not fit")
       y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
       y <- y[, c(4, 5, 1:3)]
@@ -494,195 +472,188 @@ gdrate <- function(input, pval) {
     # data prep
     ip <- inputprep(input)
 
-  # where all input data is excluded cases (insufficient data for analysis)
-  if (ip$cont == 0) {
-    # where non-analylzable cases only scenario
-    resultsexc1only <- function() {
-      ol <- data.frame(ip$excluded)
-      outlist1 <- genoutlist(ol)
-
-      ol2 <- ol[, c("name", "numcyc", "calcfinal")]
-      colnames(ol2)[2:3] <- c("N", "selectedFit")
-      OutputData <- cbind(ol2, g = NaN, d = NaN, phi = NaN)
-      noa <- "no analyzable cases in input data"
-      result <- list(allest = noa, results = OutputData, models = outlist1, sumstats = noa)
-      return(result)
-    }
-
-    result <- resultsexc1only()
-    return(result)
-
-  } else {
-
-    # where analyzable cases
-    resultsanalyzable <- function() {
-      # models
-      foo <- initf()
-
-      # where analyzable cases in input data user input table
-      ip <- inputprep(input)
-      allinput <- ip$inputdata
-
-      # number of nonexcluded cases
-      lnDSET <- length(unique(allinput$name))
-
-      # model and plot selected or return excluded
-      allconv0 <- checkconv2()
-      allconv <- allconv0[(allconv0$selected == allconv0$fit | allconv0$selected ==
-                             "not fit"), ]
-      kep <- c("name", "selected", "IDr", "N")
-      res00 <- unique(allconv[, c(kep)])
-
-      # create sets by inclusion and analysis status
-      setex <- function() {
-
-        all <- res00
-        all$calcfinal <- all$selected
-        allm <- all[, c("name", "calcfinal", "N")]
-
-        # create empty dataset for if no cases
-        naempty <- function() {
-          name <- NaN
-          dnone <- data.frame(cbind(name, calcfinal = NA, N = NaN))
-          dnone$calcfinal <- as.character(dnone$calcfinal)
-        }
-
-        # included cases
-        incl <- subset(allm, allm$calcfinal != "not fit")
-        inc1 <- dim(incl)[1]
-        if (inc1 > 0) {
-          inc2 <- incl
-          inc2$name <- as.numeric(as.character(inc2$name))
-        } else {
-          inc2 <- naempty()
-        }
-
-        # excluded cases analyzed
-        notfit <- subset(allm, allm$calcfinal == "not fit")
-        nf <- dim(notfit)[1]
-        if (nf > 0) {
-          nf2 <- notfit
-          nf2$name <- as.numeric(as.character(nf2$name))
-        } else {
-          nf2 <- naempty()
-        }
-
-        # excluded cases not analyzed
-        excl <- ip$excluded
-        colnames(excl)[4] <- "N"
-        exclm <- excl[complete.cases(excl), c("name", "calcfinal", "N")]
-        excl1 <- dim(exclm)[1]
-        if (excl1 > 0) {
-          excl2 <- exclm
-        } else {
-          excl2 <- naempty()
-        }
-
-        # merge and return list
-        all1 <- data.frame(rbind(inc2, nf2, excl2))
-        all2 <- all1[(all1$calcfinal != "NA"), ]
-        row.names(all2) <- NULL
-        combo <- list(inc1 = inc1, nf = nf, excl1 = excl1, all2 = all2)
-        return(combo)
+    # where all input data is non-analyzed excluded cases
+    if (ip$cont == 0) {
+      resultsexc1only <- function() {
+        ol <- data.frame(ip$excluded)
+        outlist1 <- genoutlist(ol)
+        ol2 <- ol[, c("name", "numcyc", "calcfinal")]
+        colnames(ol2)[2:3] <- c("N", "selectedFit")
+        OutputData <- cbind(ol2, g = NaN, d = NaN, phi = NaN)
+        noa <- "no analyzable cases in input data"
+        result <- list(allest = noa, results = OutputData, models = outlist1,
+                       sumstats = noa)
+        return(result)
       }
-      combos <- setex()
-      inc1 <- combos$inc1
-      excl1 <- combos$excl1
-      nf <- combos$nf
-      all2 <- data.frame(combos$all2)
 
-      # summary by fit/exclusion reason
-      outlist1 <- genoutlist(all2)
+      result <- resultsexc1only()
+      return(result)
 
-      # plots and output estimates where analyzed cases by inc exc status
-      if (inc1 > 0) {
-        # where included cases create table of estimates for selected fits of analyzed
-        # cases
-        pEst <- allconv0[allconv0$selected == allconv0$fit, ]
+    } else {
 
-        # create dset with finalg/d/phi columns
-        res <- aggPE(pEst = pEst)
+      # where analyzable cases
+      resultsanalyzable <- function() {
+        ip <- inputprep(input)
+        allinput <- ip$inputdata
 
-        # return descriptive stats by variable
-        retAll <- function(vr, vc) {
-          vals <- na.omit(vr)
-          lv <- length(vals)
-          if (lv > 0) {
-            N <- length(vals)
-            Median <- round(median(vals), digits = 6)
-            IQR <- paste("(", round(quantile(vals)[2], digits = 6), ", ", round(quantile(vals)[4],
-                                                                                digits = 6), ")", sep = "")
-            Mean <- round(mean(vals), digits = 6)
-            SD <- round(sd(vals), digits = 6)
-            Parameter <- vc
-            out1 <- data.frame(cbind(Parameter, N, Median, IQR, Mean, SD))
-          } else {
-            Parameter <- vc
-            nv <- NaN
-            out1 <- data.frame(cbind(Parameter, N = nv, Median = nv, IQR = nv,
-                                     Mean = nv, SD = nv))
+        # number of nonexcluded cases
+        lnDSET <- length(unique(allinput$name))
+
+        # model and plot selected or return excluded
+        allconv0 <- checkconv2()
+        allconv <- allconv0[(allconv0$selected == allconv0$fit | allconv0$selected ==
+                               "not fit"), ]
+        kep <- c("name", "selected", "IDr", "N")
+        res00 <- unique(allconv[, c(kep)])
+
+        # create sets by inclusion and analysis status
+        setex <- function() {
+          all <- res00
+          all$calcfinal <- all$selected
+          allm <- all[, c("name", "calcfinal", "N")]
+
+          # create empty dataset for if no cases
+          naempty <- function() {
+            name <- NaN
+            dnone <- data.frame(cbind(name, calcfinal = NA, N = NaN))
+            dnone$calcfinal <- as.character(dnone$calcfinal)
           }
-          return(out1)
-        }
-        g <- retAll(res$g, "g")
-        d <- retAll(res$d, "d")
-        phi <- retAll(res$phi, "phi")
-        outlist2 <- data.frame(rbind(g, d, phi))
 
-        # merge results table with cases not run in analysis (i.e., excluded)
-        if (excl1 > 0) {
+          # included cases
+          incl <- subset(allm, allm$calcfinal != "not fit")
+          inc1 <- dim(incl)[1]
+          if (inc1 > 0) {
+            inc2 <- incl
+            inc2$name <- as.numeric(as.character(inc2$name))
+          } else {
+            inc2 <- naempty()
+          }
+
+          # excluded cases analyzed
+          notfit <- subset(allm, allm$calcfinal == "not fit")
+          nf <- dim(notfit)[1]
+          if (nf > 0) {
+            nf2 <- notfit
+            nf2$name <- as.numeric(as.character(nf2$name))
+          } else {
+            nf2 <- naempty()
+          }
+
           # excluded cases not analyzed
           excl <- ip$excluded
-          excl$type <- "excluded"
-          aid <- c("name", "numcyc", "type", "calcfinal")
-          exclm <- excl[!is.na(excl$name), aid]
-          colnames(exclm)[2:4] <- c("N", "type", "selectedFit")
-          res$name <- as.numeric(as.character((res$name)))
-          rc <- merge(res, exclm, by = c("name", "N", "type", "selectedFit"), all = TRUE)
-        } else {
-          rc <- res
-        }
+          colnames(excl)[4] <- "N"
+          exclm <- excl[complete.cases(excl), c("name", "calcfinal", "N")]
+          excl1 <- dim(exclm)[1]
+          if (excl1 > 0) {
+            excl2 <- exclm
+          } else {
+            excl2 <- naempty()
+          }
 
-        if (nf > 0) {
+          # merge and return list
+          all1 <- data.frame(rbind(inc2, nf2, excl2))
+          all2 <- all1[(all1$calcfinal != "NA"), ]
+          row.names(all2) <- NULL
+          combo <- list(inc1 = inc1, nf = nf, excl1 = excl1, all2 = all2)
+          return(combo)
+        }
+        combos <- setex()
+        inc1 <- combos$inc1
+        excl1 <- combos$excl1
+        nf <- combos$nf
+        all2 <- data.frame(combos$all2)
+
+        # summary by fit/exclusion reason
+        outlist1 <- genoutlist(all2)
+
+        # plots and output estimates where analyzed cases by inc exc status
+        if (inc1 > 0) {
+          # where included cases create table of estimates for selected fits of analyzed
+          pEst <- allconv0[allconv0$selected == allconv0$fit, ]
+
+          # create dset with finalg/d/phi columns
+          res <- aggPE(pEst = pEst)
+
+          # descriptive stats by variable
+          retAll <- function(vr, vc) {
+            vals <- na.omit(vr)
+            lv <- length(vals)
+            if (lv > 0) {
+              N <- length(vals)
+              Median <- round(median(vals), digits = 6)
+              IQR <- paste("(", round(quantile(vals)[2], digits = 6), ", ",
+                           round(quantile(vals)[4], digits = 6), ")", sep = "")
+              Mean <- round(mean(vals), digits = 6)
+              SD <- round(sd(vals), digits = 6)
+              Parameter <- vc
+              out1 <- data.frame(cbind(Parameter, N, Median, IQR, Mean, SD))
+            } else {
+              Parameter <- vc
+              nv <- NaN
+              out1 <- data.frame(cbind(Parameter, N = nv, Median = nv, IQR = nv,
+                                       Mean = nv, SD = nv))
+            }
+            return(out1)
+          }
+          g <- retAll(res$g, "g")
+          d <- retAll(res$d, "d")
+          phi <- retAll(res$phi, "phi")
+          outlist2 <- data.frame(rbind(g, d, phi))
+
+          # merge results table with non analyzed excluded if exists
+          if (excl1 > 0) {
+            # excluded cases not analyzed
+            excl <- ip$excluded
+            excl$type <- "excluded"
+            aid <- c("name", "numcyc", "type", "calcfinal")
+            exclm <- excl[!is.na(excl$name), aid]
+            colnames(exclm)[2:4] <- c("N", "type", "selectedFit")
+            res$name <- as.numeric(as.character((res$name)))
+            rc <- merge(res, exclm, by = c("name", "N", "type", "selectedFit"),
+                        all = TRUE)
+          } else {
+            rc <- res
+          }
+
+          if (nf > 0) {
+            notfit <- allconv0[(allconv0$selected == "not fit"), ]
+            colnames(notfit)[3] <- c("selectedFit")
+            kep <- c("name", "N", "type", "selectedFit")
+            notfit <- unique(notfit[, c(kep)])
+            rescalc <- merge(rc, notfit, by = c("name", "N", "type", "selectedFit"),
+                             all = TRUE)
+          } else {
+            rescalc <- rc
+          }
+
+        } else {
+          # where no included cases (ie nf must be GT 0)
           notfit <- allconv0[(allconv0$selected == "not fit"), ]
           colnames(notfit)[3] <- c("selectedFit")
           kep <- c("name", "N", "type", "selectedFit")
           notfit <- unique(notfit[, c(kep)])
-          rescalc <- merge(rc, notfit, by = c("name", "N", "type", "selectedFit"), all = TRUE)
-        } else {
-          rescalc <- rc
-        }
+          notfit$g <- NaN
+          notfit$d <- NaN
+          notfit$phi <- NaN
+          rescalc <- notfit
+          colnames(rescalc) <- c("name", "N", "type", "selectedFit", "g",
+                                 "d", "phi")
+          outlist2 <- "no estimates when zero included cases"
+          allconv0 <- "no estimates when zero included cases"
+        }  #end combos inc1 GT 0 else
 
-      } else {
-        # where no included cases (ie nf must be GT 0)
-        notfit <- allconv0[(allconv0$selected == "not fit"), ]
-        colnames(notfit)[3] <- c("selectedFit")
-        kep <- c("name", "N", "type", "selectedFit")
-        notfit <- unique(notfit[, c(kep)])
-        notfit$g <- NaN
-        notfit$d <- NaN
-        notfit$phi <- NaN
-        rescalc <- notfit
-        colnames(rescalc) <- c("name", "N", "type", "selectedFit", "g", "d","phi")
-        outlist2 <- "no estimates when zero included cases"
-        allconv0 <- "no estimates when zero included cases"
-      }  #end combos inc1 GT 0 else
+        # list to output
+        result <- list(allest = allconv0, results = rescalc, models = outlist1,
+                       sumstats = outlist2)
+        return(result)
+      }
 
-      # summary by fit/exclusion reason
-      #outlist1 <- genoutlist(all2)
-
-      # list to output
-      result <- list(allest = allconv0, results = rescalc, models = outlist1, sumstats = outlist2)
+      result <- resultsanalyzable()
       return(result)
-    }
-
-    result <- resultsanalyzable()
-    return(result)
-  }  #end if ip$cont==0
-  } #end generateresults function
+    }  #end if ip$cont==0
+  }  #end generateresults function
 
   result <- generateresults()
   return(result)
 }  # end of gdrate
-
 

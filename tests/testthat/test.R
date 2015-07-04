@@ -75,7 +75,7 @@ test_that("expected output allest is not null",{
 }
 )
 
-test_that("error or no output is as expected", {
+test_that("error or no output message as expected", {
 
   expect_error(gdrate(a, .1),
                "input contains no non-missing data", fixed=TRUE)
