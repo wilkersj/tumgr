@@ -38,7 +38,7 @@ test_that("gdrate output is as expected in each combination of user input data",
 
   # input producing included cases only, check that sumstats is data frame
   data("sampleData")
-  snam <- c(500007, 500012, 510001, 520001, 530002)
+  snam <- c(720001,780001,810002)
   f <- sampleData[(sampleData$name %in% snam), ]
   expect_match(class(gdrate(f, .1)$sumstats), "data.frame")
 
