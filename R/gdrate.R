@@ -220,7 +220,7 @@ gdrate <- function(input, pval) {
   }
 
   # Function to compare models and select fit or not fit with allest and results
-  checkconv2 <- function(allinput) {
+  checkconv2 <- function() {
 
     # if lm LT np or model not fit mod info
     xfit <- function(fit, name00, iMod, lm) {
@@ -355,6 +355,9 @@ gdrate <- function(input, pval) {
       return(fmd3)
     }
 
+
+    ip <- inputprep(input)
+    allinput <- ip$inputdata
     a <- allinput
     name <- unique(a$name)
     ln <- length(name)
@@ -447,20 +450,21 @@ gdrate <- function(input, pval) {
     return(out9)
   }
 
-  # Function to generate outlist1 (item 1 of four in list for gdrate fx return )
-  genoutlist <- function (x) {
-    y <- data.frame(aggregate(x$name ~ x$calcfinal, data = x, length))
-    colnames(y) <- c("Type", "N")
-    y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
-    y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
-                      "excluded")
-    olt <- c(paste(foo$fit), "not fit")
-    y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
-    y <- y[, c(4, 5, 1:3)]
-    y <- y[order(y$Group), ]
-    rownames(y) <- NULL
-    return(y)
-  }
+#   # Function to generate outlist1 (item 1 of four in list for gdrate fx return )
+#   genoutlist <- function (x) {
+#     #x<-all2
+#     y <- data.frame(aggregate(x$name ~ x$calcfinal, data = x, length))
+#     colnames(y) <- c("Type", "N")
+#     y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
+#     y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
+#                       "excluded")
+#     olt <- c(paste(foo$fit), "not fit")
+#     y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
+#     y <- y[, c(4, 5, 1:3)]
+#     y <- y[order(y$Group), ]
+#     rownames(y) <- NULL
+#     return(y)
+#   }
 
   # models
   foo <- initf()
@@ -469,6 +473,23 @@ gdrate <- function(input, pval) {
   generateresults <- function() {
     # models
     foo <- initf()
+
+    # Function to generate outlist1 (item 1 of four in list for gdrate fx return )
+    genoutlist <- function (xx) {
+      #x<-all2
+      foo <- initf()
+      y <- data.frame(aggregate(xx$name ~ xx$calcfinal, data = xx, length))
+      colnames(y) <- c("Type", "N")
+      y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
+      y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included",
+                        "excluded")
+      olt <- c(paste(foo$fit), "not fit")
+      y$Analyzed <- ifelse((y$Type %in% olt), "yes", "no")
+      y <- y[, c(4, 5, 1:3)]
+      y <- data.frame(y[order(y$Group), ])
+      rownames(y) <- NULL
+      return(y)
+    }
 
     # data prep
     ip <- inputprep(input)
@@ -492,8 +513,6 @@ gdrate <- function(input, pval) {
     return(result)
 
   } else {
-    # data
-    allinput <- ip$inputdata
 
     # where analyzable cases
     resultsanalyzable <- function() {
@@ -508,7 +527,7 @@ gdrate <- function(input, pval) {
       lnDSET <- length(unique(allinput$name))
 
       # model and plot selected or return excluded
-      allconv0 <- checkconv2(allinput=ip$inputdata)
+      allconv0 <- checkconv2()
       allconv <- allconv0[(allconv0$selected == allconv0$fit | allconv0$selected ==
                              "not fit"), ]
       kep <- c("name", "selected", "IDr", "N")
@@ -570,8 +589,10 @@ gdrate <- function(input, pval) {
       inc1 <- combos$inc1
       excl1 <- combos$excl1
       nf <- combos$nf
-      all2 <- combos$all2
+      all2 <- data.frame(combos$all2)
 
+      # summary by fit/exclusion reason
+      outlist1 <- genoutlist(all2)
 
       # plots and output estimates where analyzed cases by inc exc status
       if (inc1 > 0) {
@@ -648,7 +669,7 @@ gdrate <- function(input, pval) {
       }  #end combos inc1 GT 0 else
 
       # summary by fit/exclusion reason
-      outlist1 <- genoutlist(all2)
+      #outlist1 <- genoutlist(all2)
 
       # list to output
       result <- list(allest = allconv0, results = rescalc, models = outlist1, sumstats = outlist2)
