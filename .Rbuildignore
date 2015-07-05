@@ -1,2 +1,9 @@
+NEWS\.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^cran-comments\.md$ # Comments for CRAN submission
+^\.travis.yml$
+
+^README\.Rmd$
+^README-.*\.png$
+^NEWS\.md$

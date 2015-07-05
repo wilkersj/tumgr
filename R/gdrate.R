@@ -1,5 +1,4 @@
 
-
 gdrate <- function(input, pval) {
 
   # Function for given model and dataset
