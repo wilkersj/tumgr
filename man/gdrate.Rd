@@ -6,18 +6,21 @@
 Tumor Growth Rate Analysis
 }
 \description{
- Function to determine tumor growth rates for given patient data. Output includes individual and summary data for tumor growth (g), decay (d) and phi (\eqn{\phi}) estimates as well as plots of the observed and predicted tumor quantity over time.  Tumor growth rates can be used to compare treatment efficacy and predict overall survival in clinical trial datasets.
+ Function to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth (g), decay (d) and phi (\eqn{\phi}) estimates as well as optional plots of the observed and predicted tumor quantity over time.  Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial datasets.
 }
 \usage{
-gdrate(input, pval)
+gdrate(input, pval, plots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{input}{
-     A data frame containing patient tumor measurement data to be analyzed.  This data frame should consist of the following three columns (with respective column names):  "name" which contains a numeric value that uniquely identifies the patient for the respective row data. "date" which contains a numeric value for the day of evaluation for the respective row data, and "size" which contains the numeric value for the tumor quantity measurement (i.e., CT scan, PSA, CTN, CEA, etc.) for the respective row data.   
+     A data frame containing patient tumor measurement data to be analyzed.  This data frame should consist of the following three columns (with respective column names):  "name" which contains a numeric value that uniquely identifies the patient for the respective row data. "date" which contains a numeric value for the day of evaluation for the respective row data, and "size" which contains the numeric value for the tumor quantity measurement (i.e., CT scan, PSA, CTN, CEA, etc.) for the respective row data.
 }
   \item{pval}{
     A numerical value indicating the p-value level desired for analysis (e.g., 0.05 or 0.10).
+}
+  \item{plots}{
+    A logical value for plot generation of the observed and predicted tumor quantity over time (use TRUE to generate plots).
 }
 }
 \details{
@@ -30,7 +33,7 @@ Similarly, \emph{d} is eliminated when data show a continuous growth from the st
 The fourth model (below) contains an additional parameter, \eqn{\phi}, which represents the proportion of tumor cells that undergo cell death due to therapy (labeled as \emph{gdphi}).
 \deqn{f(t) = (\phi)e^{-dt} + (1-\phi){e^gt}}
 
-The Levenberg-Marquardt algorithm is used to solve these 4 non-linear least squares problems (using package \pkg{minpack.lm}) and among models where all parameters are significant predictors (given user supplied \code{pval}), the model which minimizes the AIC is the selected model for a given patient from which tumor growth rates are obtained (this output is contained in \code{results}).  
+The Levenberg-Marquardt algorithm is used to solve these 4 non-linear least squares problems (using package \pkg{minpack.lm}) and among models where all parameters are significant predictors (given user supplied \code{pval}), the model which minimizes the AIC is the selected model for a given patient from which tumor growth rates are obtained (this output is contained in \code{results}).
 
 Patients with insufficient or missing data, or patients with sufficient data where no model converged are excluded and noted individually in \code{results} and summarized in \code{models} with one of the following explanations: no data (cases with all missing data or with a measurement of 0 at time 0), only 1 or 2 data points (where the latter has less than 20 percent difference in tumor measurements), error data (where only one unique measurement value for a patient that is repeated 3 or more times, and/or where both the initial and final measurement value is zero) or not fit.
 
@@ -95,7 +98,7 @@ data(sampleData)
 
 # generate plots and results
 par(mfrow=c(3, 2))
-out <- gdrate(sampleData, 0.05)
+out <- gdrate(sampleData, 0.05, TRUE)
 par(mfrow=c(1, 1))
 
 # summary of cases

@@ -1,13 +1,15 @@
 
-gdrate <- function(input, pval) {
+gdrate <- function(input, pval, plots) {
 
   # Function for given model and dataset
   gdX <- function(input1, i) {
     tit <- paste("ID=", unique(input1$name), sep = "")
     dset <- input1[order(input1$date), ]
-    f <- as.matrix(na.omit(dset$size))
+    #f <- as.matrix(na.omit(dset$size))
+    f <- as.matrix(dset$size)
     f = f/f[1]
-    time <- as.matrix(na.omit(dset$date))
+    #time <- as.matrix(na.omit(dset$date))
+    time <- as.matrix(dset$date)
     time = (time - time[1]) + 1
     # time = (time - time[1])
     jdta <- data.frame(cbind(time, f))
@@ -310,27 +312,27 @@ gdrate <- function(input, pval) {
         fmd1 <- sigm[(sigm$AIC == min(sigm$AIC)), ]
         selected <- paste(fmd1$fit)
         plotiMod <- as.numeric(paste(unique(fmd1$iMod)))
+        if (plots==TRUE) {
         plot.gdmodX(input1a, plotiMod)
+        }
         fmd$selected <- selected
-        f3 <- fmd
-        f3$Analyzed <- "yes"
-        f3$Group <- "included"
+        fmd$Analyzed <- "yes"
+        fmd$Group <- "included"
         kep <- c("name00", "lm", "Analyzed", "Group", "selected", "iMod",
                  "modelnames", "parameter", "Estimate", "Std..Error", "t.value",
                  "Pr...t..")
-        fmd3 <- f3[, c(kep)]
+        fmd3 <- fmd[, c(kep)]
         fmd3$IDr <- k
         input1a$ploti <- as.numeric(paste(unique(fmd1$iMod)))
         fmd3
       } else {
         fmd$selected <- "not fit"
-        f3 <- fmd
-        f3$Analyzed <- "yes"
-        f3$Group <- "excluded"
+        fmd$Analyzed <- "yes"
+        fmd$Group <- "excluded"
         kep <- c("name00", "lm", "Analyzed", "Group", "selected", "iMod",
                  "modelnames", "parameter", "Estimate", "Std..Error", "t.value",
                  "Pr...t..")
-        fmd3 <- f3[, c(kep)]
+        fmd3 <- fmd[, c(kep)]
         fmd3$IDr <- k
         fmd3
       }

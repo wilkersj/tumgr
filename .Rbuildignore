@@ -9,3 +9,7 @@ NEWS\.md
 ^NEWS\.md$
 ^comments$
 ^\.travis\.yml$
+
+^\.Rhistory$
+^\.git$
+.travis.yml$
