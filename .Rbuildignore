@@ -1,4 +1,3 @@
-NEWS\.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^cran-comments\.md$ # Comments for CRAN submission
@@ -8,8 +7,4 @@ NEWS\.md
 ^README-.*\.png$
 ^NEWS\.md$
 ^comments$
-^\.travis\.yml$
 
-^\.Rhistory$
-^\.git$
-.travis.yml$

@@ -5,13 +5,10 @@ gdrate <- function(input, pval, plots) {
   gdX <- function(input1, i) {
     tit <- paste("ID=", unique(input1$name), sep = "")
     dset <- input1[order(input1$date), ]
-    #f <- as.matrix(na.omit(dset$size))
     f <- as.matrix(dset$size)
     f = f/f[1]
-    #time <- as.matrix(na.omit(dset$date))
     time <- as.matrix(dset$date)
     time = (time - time[1]) + 1
-    # time = (time - time[1])
     jdta <- data.frame(cbind(time, f))
     colnames(jdta) <- c("time", "f")
     v <- subset(foo, foo$IDmodel == i)
@@ -22,74 +19,29 @@ gdrate <- function(input, pval, plots) {
     return(outgd)
   }
 
-  # Function to plot observed and predicted values for given patient and model
-  plot.gdmodX <- function(input1, i) {
-    # data
-    tit <- paste("ID=", unique(input1$name), sep = "")
-    dset <- input1[order(input1$date), ]
-    tseq <- as.numeric(paste(unique(dset$tseq)))
-    time <- dset$t
-    f <- dset$f
-    jdta <- data.frame(cbind(time, f))
-
-    # model info
-    v <- subset(foo, foo$IDmodel == i)
-    ft <- paste(v$fit)
-    cc <- paste(v$cc)
-
-    # model given input and i
-    outgd <- gdX(input1, i)
-    newx <- seq(0, tseq, by = 1)
-    prd <- predict(outgd, newdata = data.frame(time = newx))
-
-    # merge nwx and pred to bind with input and calc rmse
-    yhat <- cbind(newx, prd)
-    colnames(yhat)[1] <- "time"
-    h <- merge(jdta, yhat, by = "time")
-    h$remove <- ifelse((h$time == 0 & h$prd != 1), 1, 0)
-    h2 <- subset(h, h$remove == 0)
-    h2$res <- h2$f - h2$prd
-    h2$resSq <- h2$res * h2$res
-    rmse <- sqrt(mean(h2$resSq))
-
-    # plot
-    par(mar = c(6.5, 4.5, 1, 1.5))
-    plot(f ~ time, data = jdta, frame = FALSE, col = "red", cex = 1.3, cex.axis = 1.4,
-         cex.lab = 1.6, pch = 19, xlab = "Days", ylab = "Tumor Q/Q0", main = tit)
-    lines(newx, prd, col = cc, lty = 1, lwd = 3)
-    lp <- ifelse((ft == "dx"), "topright", "topleft")
-    legend(lp, ft, col = cc, bty = "n", lty = c(1), lwd = 3, cex = 1.2)
-
-    # observed values
-    points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2,
-           cex = 1.5)
-    # return(rmse)
-  }
-
   # Function to prepare user input data for modeling
   inputprep <- function(input1) {
 
     if (is.null(input1)) {
       stop("input argument missing")
     } else {
-        try({
-          input <- input1[complete.cases(input1), ]
-        }, silent = TRUE)
-        if (dim(input)[1] < 1) {
-          stop("input contains no non-missing data")
-        } else {
-          if (!c('name') %in% colnames(input) | !c('size') %in% colnames(input) | !c('date') %in% colnames(input)) {
-            stop("please rename columns as described in help page")
-          }  else {
-            if (!is.numeric(input[,c(1)]) | !is.numeric(input[,c(2)]) | !is.numeric(input[,c(3)])) {
-              stop("all input data must be numeric")
-            } else {
-              input2 <- input
-            }
+      try({
+        input <- input1[complete.cases(input1), ]
+      }, silent = TRUE)
+      if (dim(input)[1] < 1) {
+        stop("input contains no non-missing data")
+      } else {
+        if (!c('name') %in% colnames(input) | !c('size') %in% colnames(input) | !c('date') %in% colnames(input)) {
+          stop("please rename columns as described in help page")
+        }  else {
+          if (!is.numeric(input[,c(1)]) | !is.numeric(input[,c(2)]) | !is.numeric(input[,c(3)])) {
+            stop("all input data must be numeric")
+          } else {
+            input2 <- input
           }
         }
       }
-
+    }
 
     name <- unique(input2[, "name"])
     lasti <- as.numeric(length(name))
@@ -175,23 +127,20 @@ gdrate <- function(input, pval, plots) {
 
 
     ex <- subset(ninfo2, ninfo2$calcfinal != "analyze")
-    dex <- dim(ex)[1]
-    if (dex > 0) {
+    if (dim(ex)[1] > 0) {
       zexc <- unique(ex[, c("IDm", "name", "calcfinal", "numcyc")])
     } else {
       zexc <- data.frame(NaN, NaN, NaN, NaN)
       colnames(zexc) <- c("IDm", "name", "calcfinal", "numcyc")
-      zexc
     }
 
-    # results return
     ninfo3 <- ninfo2[, c(1:16, 18)]
     z8a <- subset(ninfo3, ninfo3$calcfinal == "analyze")
     z8 <- z8a[, c(2, 1, 3:13, 15)]
     name <- unique(z8$name)
     nl <- length(name)
 
-    # if data has only excluded cases, else input for analysis
+    # return result if data has only excluded cases, else input for analysis
     if (nl < 1) {
       resultip <- list(excluded = zexc, inputdata = zexc, cont = 0)
     } else {
@@ -204,10 +153,54 @@ gdrate <- function(input, pval, plots) {
     return(resultip)
   }
 
-  # Function to compare models and select fit or not fit with allest and results
+  # Function to plot observed and predicted values for given patient and model
+  plotgdX <- function(input1, i) {
+    # data
+    tit <- paste("ID=", unique(input1$name), sep = "")
+    dset <- input1[order(input1$date), ]
+    tseq <- as.numeric(paste(unique(dset$tseq)))
+    time <- dset$t
+    f <- dset$f
+    jdta <- data.frame(cbind(time, f))
+
+    # model info
+    v <- subset(foo, foo$IDmodel == i)
+    ft <- paste(v$fit)
+    cc <- paste(v$cc)
+
+    # model given input and i
+    outgd <- gdX(input1, i)
+    newx <- seq(0, tseq, by = 1)
+    prd <- predict(outgd, newdata = data.frame(time = newx))
+
+    # merge pred with input for calc rmse
+    yhat <- cbind(newx, prd)
+    colnames(yhat)[1] <- "time"
+    h <- merge(jdta, yhat, by = "time")
+    h$remove <- ifelse((h$time == 0 & h$prd != 1), 1, 0)
+    h2 <- subset(h, h$remove == 0)
+    h2$res <- h2$f - h2$prd
+    h2$resSq <- h2$res * h2$res
+    rmse <- sqrt(mean(h2$resSq))
+
+    # plot
+    par(mar = c(6.5, 4.5, 1, 1.5))
+    plot(f ~ time, data = jdta, frame = FALSE, col = "red", cex = 1.3, cex.axis = 1.4,
+         cex.lab = 1.6, pch = 19, xlab = "Days", ylab = "Tumor Q/Q0", main = tit)
+    lines(newx, prd, col = cc, lty = 1, lwd = 3)
+    lp <- ifelse((ft == "dx"), "topright", "topleft")
+    legend(lp, ft, col = cc, bty = "n", lty = c(1), lwd = 3, cex = 1.2)
+
+    # observed values
+    points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2,
+           cex = 1.5)
+    # return(rmse)
+  }
+
+  # Function to compare models and return selected fit with estimates or not fit
   checkconv2 <- function() {
 
-    # if lm LT np or model not fit mod info
+    # empty mod row if lm LT np or model not fit
     xfit <- function(fit, name00, iMod, lm) {
       isconv <- "NA"
       stopMessage <- "NA"
@@ -219,7 +212,7 @@ gdrate <- function(input, pval, plots) {
       zaout
     }
 
-    # if lm LT np or model not fit coef tab
+    # empty coef tab if lm LT np or model not fit
     xcof <- function(fit, name00) {
       parameter <- "NA"
       modelnames <- fit
@@ -231,11 +224,11 @@ gdrate <- function(input, pval, plots) {
       q
     }
 
-    # by ID4 check conv k=ID4 # sub by pt and then mod
+    # by patient
     fid4 <- function(k) {
       input1a <- subset(c, c$ID4 == k)
 
-      # by model for given patient k
+      # by model given patient k
       fmod <- function(i) {
         name00 <- as.numeric(paste(unique(input1a$name)))
         fit <- paste(foo[foo$IDmodel == i, c(2)])
@@ -247,7 +240,7 @@ gdrate <- function(input, pval, plots) {
         # number of measurement values
         lm <- length(input1a$size)
 
-        # cond exec if n measurement values LT n parameters
+        # cond exe if n measurement values LE n parameters
         if (lm <= np) {
           name00 <- as.numeric(paste(unique(input1a$name)))
           zaout0 <- xfit(fit = fit, name00 = name00, iMod = iMod, lm = lm)
@@ -312,9 +305,7 @@ gdrate <- function(input, pval, plots) {
         fmd1 <- sigm[(sigm$AIC == min(sigm$AIC)), ]
         selected <- paste(fmd1$fit)
         plotiMod <- as.numeric(paste(unique(fmd1$iMod)))
-        if (plots==TRUE) {
-        plot.gdmodX(input1a, plotiMod)
-        }
+        if (plots==TRUE) { plotgdX(input1a, plotiMod) }
         fmd$selected <- selected
         fmd$Analyzed <- "yes"
         fmd$Group <- "included"
@@ -353,7 +344,6 @@ gdrate <- function(input, pval, plots) {
       c <- merge(a, b, by = "name")
       conout <- do.call("rbind", sapply(1:ln, fid4, simplify = FALSE))
       conout
-
     } else {
       zaout <- xfit(fit = "NA", name00 = "name00")
       conout <- zaout
@@ -365,11 +355,12 @@ gdrate <- function(input, pval, plots) {
     colnames(pEst) <- c("name", "type", "selected", "fit", "parameter", "Estimate",
                         "StdError", "t.value", "p.value", "N", "IDr")
     return(pEst)
-    # end checkconv function
   }
 
   # Function to create finalg/d/phi columns from results for des stats
   aggPE <- function(pEst) {
+    # pEst is the output data frame from the checkconv2 function
+
     out3 <- data.frame(pEst)
     ncyc <- unique(out3[, c("name", "N", "type")])
 
@@ -434,7 +425,7 @@ gdrate <- function(input, pval, plots) {
     return(out9)
   }
 
-  # Function to return mod table
+  # Function to create mod table
   initf <- function() {
     IDmod <- rep(1:4, 1)
     fit <- c("gd", "dx", "gx", "gdphi")
@@ -454,15 +445,11 @@ gdrate <- function(input, pval, plots) {
     return(foo)
   }
 
-  # models
-  foo <- initf()
-
   # Function to return result list
   generateresults <- function() {
 
     # Function to generate outlist1 for gdrate fx return
     genoutlist <- function(xx) {
-      # foo <- initf()
       y <- data.frame(aggregate(xx$name ~ xx$calcfinal, data = xx, length))
       colnames(y) <- c("Type", "N")
       y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
@@ -505,7 +492,7 @@ gdrate <- function(input, pval, plots) {
         # number of nonexcluded cases
         lnDSET <- length(unique(allinput$name))
 
-        # model and plot selected or return excluded
+        # model and optionally plot selected or return excluded
         allconv0 <- checkconv2()
         allconv <- allconv0[(allconv0$selected == allconv0$fit | allconv0$selected ==
                                "not fit"), ]
@@ -577,7 +564,7 @@ gdrate <- function(input, pval, plots) {
           # where included cases create table of estimates for selected fits of analyzed
           pEst <- allconv0[allconv0$selected == allconv0$fit, ]
 
-          # create dset with finalg/d/phi columns
+          # generate dset with finalg/d/phi columns
           res <- aggPE(pEst = pEst)
 
           # descriptive stats by variable
@@ -606,7 +593,7 @@ gdrate <- function(input, pval, plots) {
           phi <- retAll(res$phi, "phi")
           outlist2 <- data.frame(rbind(g, d, phi))
 
-          # merge results table with non analyzed excluded if exists
+          # merge results table with non analyzed excluded if existing
           if (excl1 > 0) {
             # excluded cases not analyzed
             excl <- ip$excluded
@@ -656,10 +643,11 @@ gdrate <- function(input, pval, plots) {
 
       result <- resultsanalyzable()
       return(result)
-    }  #end if ip$cont==0
-  }  #end generateresults function
+    }
+  }
 
+  foo <- initf()
   result <- generateresults()
   return(result)
-}  # end of gdrate
+}
 

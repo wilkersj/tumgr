@@ -35,7 +35,7 @@ The fourth model (below) contains an additional parameter, \eqn{\phi}, which rep
 
 The Levenberg-Marquardt algorithm is used to solve these 4 non-linear least squares problems (using package \pkg{minpack.lm}) and among models where all parameters are significant predictors (given user supplied \code{pval}), the model which minimizes the AIC is the selected model for a given patient from which tumor growth rates are obtained (this output is contained in \code{results}).
 
-Patients with insufficient or missing data, or patients with sufficient data where no model converged are excluded and noted individually in \code{results} and summarized in \code{models} with one of the following explanations: no data (cases with all missing data or with a measurement of 0 at time 0), only 1 or 2 data points (where the latter has less than 20 percent difference in tumor measurements), error data (where only one unique measurement value for a patient that is repeated 3 or more times, and/or where both the initial and final measurement value is zero) or not fit.
+Patients with insufficient or missing data, or patients with sufficient data where no model converged are excluded and noted individually in \code{results} and summarized in \code{models} with one of the following explanations: no data (cases with all missing data), only 1 or 2 data points (where the latter has less than 20 percent difference in tumor measurements), error data (where only one unique measurement value for a patient that is repeated 3 or more times, and/or where both the initial and final measurement value is zero), or not fit.
 
 %%\tabular{ll}{
 %%Package: \tab gdRate\cr
