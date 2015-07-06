@@ -64,45 +64,30 @@ gdrate <- function(input, pval) {
     # return(rmse)
   }
 
-  # Function to return mod table
-  initf <- function() {
-    IDmod <- rep(1:4, 1)
-    fit <- c("gd", "dx", "gx", "gdphi")
-    model <- c("f~exp(-d*time)+exp(g*(time))-1", "f~exp(-dx*time)", "f~exp(gx*time)",
-               "f~(1-p)*exp(gt*time)+p*exp(-dt*time)")
-    start <- c("list(g=0.00511,d=0.00511)", "list(dx=0.00511)", "list(gx=0.00511)",
-               "list(p=.9,gt=.00511,dt=.00511)")
-    cc <- c("blue", "purple3", "navy", "midnightblue")
-    lb <- c("c(0,0)", "c(0)", "c(0)", "c(0,0,0)")
-    ub <- c("c(1,1)", "c(1)", "c(1)", "c(1,1,1)")
-    foo <- data.frame(cbind(IDmod, fit, model, start, cc, lb, ub))
-    foo$IDmodel <- as.numeric(paste(foo$IDmod))
-    foo$K <- c(2, 1, 1, 3)
-    foo$gvar <- c("g", "NA", "gx", "gt")
-    foo$dvar <- c("d", "dx", "NA", "dt")
-    foo$pvar <- c("NA", "NA", "NA", "p")
-    return(foo)
-  }
-
   # Function to prepare user input data for modeling
   inputprep <- function(input1) {
 
     if (is.null(input1)) {
       stop("input argument missing")
     } else {
-      try({
-        input <- input1[complete.cases(input1), ]
-      }, silent = TRUE)
-      if (dim(input)[1] < 1) {
-        stop("input contains no non-missing data")
-      } else {
-        if (!is.numeric(input$size) | !is.numeric(input$date) | !is.numeric(input$name)) {
-          stop("all input data must be numeric")
+        try({
+          input <- input1[complete.cases(input1), ]
+        }, silent = TRUE)
+        if (dim(input)[1] < 1) {
+          stop("input contains no non-missing data")
         } else {
-          input2 <- input
+          if (!c('name') %in% colnames(input) | !c('size') %in% colnames(input) | !c('date') %in% colnames(input)) {
+            stop("please rename columns as described in help page")
+          }  else {
+            if (!is.numeric(input[,c(1)]) | !is.numeric(input[,c(2)]) | !is.numeric(input[,c(3)])) {
+              stop("all input data must be numeric")
+            } else {
+              input2 <- input
+            }
+          }
         }
       }
-    }
+
 
     name <- unique(input2[, "name"])
     lasti <- as.numeric(length(name))
@@ -445,6 +430,26 @@ gdrate <- function(input, pval) {
                      "finalphi")]
     colnames(out9)[5:7] <- c("g", "d", "phi")
     return(out9)
+  }
+
+  # Function to return mod table
+  initf <- function() {
+    IDmod <- rep(1:4, 1)
+    fit <- c("gd", "dx", "gx", "gdphi")
+    model <- c("f~exp(-d*time)+exp(g*(time))-1", "f~exp(-dx*time)", "f~exp(gx*time)",
+               "f~(1-p)*exp(gt*time)+p*exp(-dt*time)")
+    start <- c("list(g=0.00511,d=0.00511)", "list(dx=0.00511)", "list(gx=0.00511)",
+               "list(p=.9,gt=.00511,dt=.00511)")
+    cc <- c("blue", "purple3", "navy", "midnightblue")
+    lb <- c("c(0,0)", "c(0)", "c(0)", "c(0,0,0)")
+    ub <- c("c(1,1)", "c(1)", "c(1)", "c(1,1,1)")
+    foo <- data.frame(cbind(IDmod, fit, model, start, cc, lb, ub))
+    foo$IDmodel <- as.numeric(paste(foo$IDmod))
+    foo$K <- c(2, 1, 1, 3)
+    foo$gvar <- c("g", "NA", "gx", "gt")
+    foo$dvar <- c("d", "dx", "NA", "dt")
+    foo$pvar <- c("NA", "NA", "NA", "p")
+    return(foo)
   }
 
   # models

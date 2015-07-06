@@ -27,7 +27,11 @@ tall <- data.frame(rbind(c, d, f))
 h <- data.frame(rbind(c, f))
 # input producing included and non-analyzed excluded cases
 g <- data.frame(rbind(d, f))
-
+# input with improper colnames
+name <- c(rep(1,5))
+day <- c(1, 30, 60, 90, 120)
+size <- c(1, 6, .2, 7, .1)
+l <- data.frame(cbind(name, day, size))
 
 
 #------------- tests-------------------------#
@@ -73,6 +77,13 @@ test_that("expected output allest is not null",{
   expect_false(is.null(gdrate(d, .1)$allest))
   expect_false(is.null(gdrate(e, .1)$allest))
   expect_false(is.null(gdrate(f, .1)$allest))
+}
+)
+
+
+test_that("input colnames are correct",{
+  expect_error(gdrate(l, .1),
+               "please rename columns as described in help page", fixed=TRUE)
 }
 )
 
