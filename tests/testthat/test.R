@@ -79,14 +79,14 @@ l <- data.frame(cbind(name, day, size))
 #   expect_false(is.null(gdrate(f, .1, FALSE)$allest))
 # }
 # )
-
-
+#
+#
 # test_that("input colnames are correct",{
 #   expect_error(gdrate(l, .1, FALSE),
 #                "please rename columns as described in help page", fixed=TRUE)
 # }
 # )
-
+#
 # test_that("error or no output message as expected", {
 #
 #   expect_error(gdrate(a, .1, FALSE),
