@@ -14,7 +14,7 @@ Install using the 'devtools' package
 ``` r
 # install.packages("devtools")  
 # library(devtools)  
-# install_github('jwm08/tumgr')
+# install_github('wilkersj/tumgr')
 ```
 
 Usage
