@@ -9,10 +9,13 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Installation
 ============
 
-Using the 'devtools' package
-install.packages("devtools")
-library(devtools)
-install\_github('jwm08/tumgr')
+Install using the 'devtools' package
+
+``` r
+# install.packages("devtools")  
+# library(devtools)  
+# install_github('jwm08/tumgr')
+```
 
 Usage
 =====
@@ -28,7 +31,7 @@ library(tumgr)
 # example data  
 data(sampleData)
 
-# generate plots and results
+# generate results with plots set to off
 par(mfrow=c(3, 2))
 out <- gdrate(sampleData, 0.10, FALSE)
 par(mfrow=c(1, 1))

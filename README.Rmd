@@ -1,5 +1,5 @@
 ---
-output: 
+output:
   md_document:
     variant: markdown_github
 ---
@@ -13,12 +13,14 @@ output:
 # tumgr
  tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time.  Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial datasets.
 
- 
 # Installation
-Using the 'devtools' package  
-install.packages("devtools")  
-library(devtools)  
-install_github('jwm08/tumgr')
+
+Install using the 'devtools' package
+```{r, echo=TRUE}
+# install.packages("devtools")  
+# library(devtools)  
+# install_github('jwm08/tumgr')
+```
 
 # Usage
 ```{r, echo =TRUE}  
@@ -29,7 +31,7 @@ library(tumgr)
 # example data  
 data(sampleData)
 
-# generate plots and results
+# generate results with plots set to off
 par(mfrow=c(3, 2))
 out <- gdrate(sampleData, 0.10, FALSE)
 par(mfrow=c(1, 1))
