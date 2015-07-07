@@ -18,7 +18,25 @@ install\_github('jwm08/tumgr')
 Usage
 =====
 
+``` r
+# load library
+library(tumgr)
+```
+
     ## Loading required package: minpack.lm
+
+``` r
+# example data  
+data(sampleData)
+
+# generate plots and results
+par(mfrow=c(3, 2))
+out <- gdrate(sampleData, 0.10, FALSE)
+par(mfrow=c(1, 1))
+
+# summary of cases
+out$models
+```
 
     ##      Group Analyzed                 Type  N Percentage
     ## 1 excluded       no 2 evals not 20% diff  1          1
@@ -28,6 +46,11 @@ Usage
     ## 5 included      yes                   gd 26         38
     ## 6 included      yes                gdphi  5          7
     ## 7 included      yes                   gx  4          6
+
+``` r
+# descriptive statistics
+out$sumstats
+```
 
     ##   Parameter  N   Median                  IQR     Mean       SD
     ## 1         g 35  0.00137 (0.000779, 0.003975) 0.003234  0.00397

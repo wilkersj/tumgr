@@ -21,7 +21,7 @@ library(devtools)
 install_github('jwm08/tumgr')
 
 # Usage
-```{r, echo =FALSE}  
+```{r, echo =TRUE}  
 
 # load library
 library(tumgr)
@@ -41,10 +41,5 @@ out$models
 out$sumstats
 ```
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-  )
-```
+
+
