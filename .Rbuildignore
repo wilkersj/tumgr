@@ -5,6 +5,7 @@
 
 ^README\.Rmd$
 ^README-.*\.png$
+^README\.md$
 ^NEWS\.md$
 ^comments$
 

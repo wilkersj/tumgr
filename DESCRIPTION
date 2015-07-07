@@ -4,7 +4,6 @@ Title: Tumor Growth Rate Analysis
 Version: 0.0.1
 Date: 2015-06-18
 Author: Julia Wilkerson
-URL: https://github.com/jwm08/tumgr
 Maintainer: Julia Wilkerson <wilkersj@mail.nih.gov>
 Depends: R (>= 3.2.1), minpack.lm
 Description: Estimates patient tumor growth and regression rates from clinical trial patient tumor measurement and evaluation date data, and plots observed and predicted values.
