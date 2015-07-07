@@ -1,7 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<!-- [![Travis-CI Build Status](https://travis-ci.org/jwm08/tumgr.svg?branch=master)](https://travis-ci.org/jwm08/tumgr)-->
-<!--[![Travis-CI Build Status](https://magnum.travis-ci.com/jwm08/tumgr.svg?token=x6LbBtgwp3yKZKzcPxxp&branch=master) -->
-[![Travis-CI Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)
+[![Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)](https://travis-ci.org/wilkersj/tumgr)
 
 tumgr
 =====
