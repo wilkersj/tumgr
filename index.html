@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="tumgr : Tumor Growth Rate Analysis">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>tumgr</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/wilkersj/tumgr">View on GitHub</a>
+
+          <h1 id="project_title">tumgr</h1>
+          <h2 id="project_tagline">Tumor Growth Rate Analysis</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/wilkersj/tumgr/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/wilkersj/tumgr/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><a href="https://travis-ci.org/wilkersj/tumgr"><img src="https://travis-ci.org/wilkersj/tumgr.svg?branch=master" alt="Build Status"></a></p>
+
+<h1>
+<a id="tumgr" class="anchor" href="#tumgr" aria-hidden="true"><span class="octicon octicon-link"></span></a>tumgr</h1>
+
+<p>tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time. Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial data sets.</p>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Install using the 'devtools' package</p>
+
+<div class="highlight highlight-r"><pre><span class="pl-c"># install.packages("devtools")  </span>
+<span class="pl-c"># library(devtools)  </span>
+<span class="pl-c"># install_github('wilkersj/tumgr')</span></pre></div>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<div class="highlight highlight-r"><pre><span class="pl-c"># load library</span>
+library(<span class="pl-smi">tumgr</span>)</pre></div>
+
+<pre><code>## Loading required package: minpack.lm
+</code></pre>
+
+<div class="highlight highlight-r"><pre><span class="pl-c"># example data  </span>
+data(<span class="pl-smi">sampleData</span>)
+
+<span class="pl-c"># generate results with plots set to off</span>
+par(<span class="pl-v">mfrow</span><span class="pl-k">=</span>c(<span class="pl-c1">3</span>, <span class="pl-c1">2</span>))
+<span class="pl-smi">out</span> <span class="pl-k">&lt;-</span> gdrate(<span class="pl-smi">sampleData</span>, <span class="pl-c1">0.10</span>, <span class="pl-c1">FALSE</span>)
+par(<span class="pl-v">mfrow</span><span class="pl-k">=</span>c(<span class="pl-c1">1</span>, <span class="pl-c1">1</span>))
+
+<span class="pl-c"># summary of cases</span>
+<span class="pl-smi">out</span><span class="pl-k">$</span><span class="pl-smi">models</span></pre></div>
+
+<pre><code>##      Group Analyzed                 Type  N Percentage
+## 1 excluded       no 2 evals not 20% diff  1          1
+## 2 excluded      yes              not fit  5          7
+## 3 excluded       no          only 1 eval  5          7
+## 4 included      yes                   dx 22         32
+## 5 included      yes                   gd 26         38
+## 6 included      yes                gdphi  5          7
+## 7 included      yes                   gx  4          6
+</code></pre>
+
+<div class="highlight highlight-r"><pre><span class="pl-c"># descriptive statistics</span>
+<span class="pl-smi">out</span><span class="pl-k">$</span><span class="pl-smi">sumstats</span></pre></div>
+
+<pre><code>##   Parameter  N   Median                  IQR     Mean       SD
+## 1         g 35  0.00137 (0.000779, 0.003975) 0.003234  0.00397
+## 2         d 53 0.020427 (0.014466, 0.034447) 0.024021 0.015576
+## 3       phi  5 0.982854 (0.827078, 0.999075) 0.871678 0.194039
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">tumgr maintained by <a href="https://github.com/wilkersj">wilkersj</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-30488037-13");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
