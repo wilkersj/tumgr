@@ -74,7 +74,7 @@ Patients with insufficient or missing data, or patients with sufficient data whe
 
 \cite{Blageov et al. (2013). Sunitinib Does Not Accelerate Tumor Growth in Patients with Metastatic Renal Cell Carcinoma. Cell Reports, 3:277--81.}
 
-\cite{O'Sullivan et al. (2014). The VEGF inhibitor axitinib has limited effectiveness as a therapy for adrenocortical cancer. Journal of Clinical Endocrinology and Metabolism, 99:1291--7.}
+\cite{O Sullivan et al. (2014). The VEGF inhibitor axitinib has limited effectiveness as a therapy for adrenocortical cancer. Journal of Clinical Endocrinology and Metabolism, 99:1291--7.}
 
 \cite{Burotto et al. (2015). Phase II clinical trial of ixabepilone in metastatic cervical carcinoma. The Oncologist, 2015 Jun 3. [Epub ahead of print].}
 }

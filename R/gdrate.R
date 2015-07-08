@@ -26,7 +26,9 @@ gdrate <- function(input, pval, plots) {
       stop("input argument missing")
     } else {
       try({
-        input <- input1[complete.cases(input1), ]
+        #input <- input1[complete.cases(input1), ]
+        input <- input1[stats::complete.cases(input1), ]
+
       }, silent = TRUE)
       if (dim(input)[1] < 1) {
         stop("input contains no non-missing data")
@@ -171,7 +173,7 @@ gdrate <- function(input, pval, plots) {
     # model given input and i
     outgd <- gdX(input1, i)
     newx <- seq(0, tseq, by = 1)
-    prd <- predict(outgd, newdata = data.frame(time = newx))
+    prd <- stats::predict(outgd, newdata = data.frame(time = newx))
 
     # merge pred with input for calc rmse
     yhat <- cbind(newx, prd)
@@ -184,15 +186,20 @@ gdrate <- function(input, pval, plots) {
     rmse <- sqrt(mean(h2$resSq))
 
     # plot
-    par(mar = c(6.5, 4.5, 1, 1.5))
-    plot(f ~ time, data = jdta, frame = FALSE, col = "red", cex = 1.3, cex.axis = 1.4,
+    #par(mar = c(6.5, 4.5, 1, 1.5))
+    graphics::par(mar = c(6.5, 4.5, 1, 1.5))
+    graphics::plot(f ~ time, data = jdta, frame = FALSE, col = "red", cex = 1.3, cex.axis = 1.4,
          cex.lab = 1.6, pch = 19, xlab = "Days", ylab = "Tumor Q/Q0", main = tit)
-    lines(newx, prd, col = cc, lty = 1, lwd = 3)
+    #lines(newx, prd, col = cc, lty = 1, lwd = 3)
+    graphics::lines(newx, prd, col = cc, lty = 1, lwd = 3)
+
     lp <- ifelse((ft == "dx"), "topright", "topleft")
-    legend(lp, ft, col = cc, bty = "n", lty = c(1), lwd = 3, cex = 1.2)
+    #legend(lp, ft, col = cc, bty = "n", lty = c(1), lwd = 3, cex = 1.2)
+    graphics::legend(lp, ft, col = cc, bty = "n", lty = c(1), lwd = 3, cex = 1.2)
+
 
     # observed values
-    points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2,
+    graphics::points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2,
            cex = 1.5)
     # return(rmse)
   }
@@ -260,7 +267,8 @@ gdrate <- function(input, pval, plots) {
             zout <- cbind(fit, iMod, name00, stopcode, stopMessage, isconv)
 
             if (isconv == "TRUE") {
-              LL <- logLik(outgd)
+              #LL <- logLik(outgd)
+              LL <- stats::logLik(outgd)
               AIC <- as.numeric(paste(-2 * LL + 2 * np))
               AICc <- as.numeric(paste(AIC + 2 * np * (np + 1)/(lm - np -
                                                                   1)))
@@ -450,7 +458,9 @@ gdrate <- function(input, pval, plots) {
 
     # Function to generate outlist1 for gdrate fx return
     genoutlist <- function(xx) {
-      y <- data.frame(aggregate(xx$name ~ xx$calcfinal, data = xx, length))
+      #y <- data.frame(aggregate(xx$name ~ xx$calcfinal, data = xx, length))
+      y <- data.frame(stats::aggregate(xx$name ~ xx$calcfinal, data = xx, length))
+
       colnames(y) <- c("Type", "N")
       y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
       y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included", "excluded")
@@ -535,7 +545,9 @@ gdrate <- function(input, pval, plots) {
           # excluded cases not analyzed
           excl <- ip$excluded
           colnames(excl)[4] <- "N"
-          exclm <- excl[complete.cases(excl), c("name", "calcfinal", "N")]
+          #exclm <- excl[complete.cases(excl), c("name", "calcfinal", "N")]
+          exclm <- excl[stats::complete.cases(excl), c("name", "calcfinal", "N")]
+
           excl1 <- dim(exclm)[1]
           if (excl1 > 0) {
             excl2 <- exclm
@@ -569,15 +581,16 @@ gdrate <- function(input, pval, plots) {
 
           # descriptive stats by variable
           retAll <- function(vr, vc) {
-            vals <- na.omit(vr)
+            #vals <- na.omit(vr)
+            vals <- stats::na.omit(vr)
             lv <- length(vals)
             if (lv > 0) {
               N <- length(vals)
-              Median <- round(median(vals), digits = 6)
-              IQR <- paste("(", round(quantile(vals)[2], digits = 6), ", ",
-                           round(quantile(vals)[4], digits = 6), ")", sep = "")
+              Median <- round(stats::median(vals), digits = 6)
+              IQR <- paste("(", round(stats::quantile(vals)[2], digits = 6), ", ",
+                           round(stats::quantile(vals)[4], digits = 6), ")", sep = "")
               Mean <- round(mean(vals), digits = 6)
-              SD <- round(sd(vals), digits = 6)
+              SD <- round(stats::sd(vals), digits = 6)
               Parameter <- vc
               out1 <- data.frame(cbind(Parameter, N, Median, IQR, Mean, SD))
             } else {

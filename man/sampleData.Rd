@@ -2,7 +2,7 @@
 \alias{sampleData}
 \docType{data}
 \title{
-Example patient tumor data.
+Example Patient Tumor Data
 }
 \description{
 Sample of control arm data for package examples from a phase 3, randomized, open-label study evaluating DN-101 in combination with Docetaxel in androgen-independent prostate cancer (AIPC) (ASCENT-2).  The data was obtained from Project Data Sphere (sponsor Novacea, Inc).
@@ -19,7 +19,7 @@ Sample of control arm data for package examples from a phase 3, randomized, open
 %%\details{
 %%}
 \source{
-Project Data Sphere (sponsor Novacea, Inc). \url{https://www.projectdatasphere.org/projectdatasphere/html/content/89} 
+Project Data Sphere (sponsor Novacea, Inc). \url{https://www.projectdatasphere.org/projectdatasphere/html/content/89}
 }
 %%\references{
 %%  ~~ possibly secondary sources and usages ~~
