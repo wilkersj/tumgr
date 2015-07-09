@@ -13,9 +13,7 @@ output:
  tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time.  Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial datasets.
 
 # Installation
-tumgr is now available on CRAN:  
-
-install.packages("tumgr")  
+tumgr is now available on CRAN: install.packages("tumgr")  
 
 
 
