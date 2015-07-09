@@ -1,7 +1,7 @@
 Package: tumgr
 Type: Package
 Title: Tumor Growth Rate Analysis
-Version: 0.0.2
+Version: 0.0.3
 Date: 2015-06-18
 Author: Julia Wilkerson
 Maintainer: Julia Wilkerson <wilkersj@mail.nih.gov>
