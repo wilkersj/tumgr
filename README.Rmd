@@ -14,12 +14,8 @@ output:
 
 # Installation
 
-Install using the 'devtools' package
-```{r, echo=TRUE}
-# install.packages("devtools")  
-# library(devtools)  
-# install_github('wilkersj/tumgr')
-```
+install.packages("tumgr")
+
 
 # Usage
 ```{r, echo =TRUE}  

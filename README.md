@@ -9,13 +9,7 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Installation
 ============
 
-Install using the 'devtools' package
-
-``` r
-# install.packages("devtools")  
-# library(devtools)  
-# install_github('wilkersj/tumgr')
-```
+install.packages("tumgr")
 
 Usage
 =====
