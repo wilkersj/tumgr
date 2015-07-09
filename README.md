@@ -10,6 +10,7 @@ Installation
 ============
 
 tumgr is now available on CRAN:
+
 install.packages("tumgr")
 
 Usage
