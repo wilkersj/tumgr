@@ -9,6 +9,7 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Installation
 ============
 
+tumgr is now available on CRAN:
 install.packages("tumgr")
 
 Usage
