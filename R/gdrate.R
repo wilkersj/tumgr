@@ -14,7 +14,9 @@ gdrate <- function(input, pval, plots) {
     v <- subset(foo, foo$IDmodel == i)
     outgd <- nlsLM(eval(parse(text = paste(v$model))), data = jdta, start = eval(parse(text = paste(v$start))),
                    control = nls.lm.control(maxiter = 1000, maxfev = 1000, factor = 0.01,
-                                            ftol = .Machine$double.eps, ptol = .Machine$double.eps), lower = eval(parse(text = paste(v$lb))),
+                                            ftol = sqrt(.Machine$double.eps),
+                                            ptol = sqrt(.Machine$double.eps)),
+                                            lower = eval(parse(text = paste(v$lb))),
                    upper = eval(parse(text = paste(v$ub))))
     return(outgd)
   }
@@ -233,10 +235,12 @@ gdrate <- function(input, pval, plots) {
 
     # by patient
     fid4 <- function(k) {
+      #k<-58
       input1a <- subset(c, c$ID4 == k)
 
       # by model given patient k
       fmod <- function(i) {
+        #i<-4
         name00 <- as.numeric(paste(unique(input1a$name)))
         fit <- paste(foo[foo$IDmodel == i, c(2)])
         iMod <- as.numeric(paste(foo[foo$IDmodel == i, c(1)]))
@@ -267,7 +271,6 @@ gdrate <- function(input, pval, plots) {
             zout <- cbind(fit, iMod, name00, stopcode, stopMessage, isconv)
 
             if (isconv == "TRUE") {
-              #LL <- logLik(outgd)
               LL <- stats::logLik(outgd)
               AIC <- as.numeric(paste(-2 * LL + 2 * np))
               AICc <- as.numeric(paste(AIC + 2 * np * (np + 1)/(lm - np -

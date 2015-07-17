@@ -9,7 +9,19 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Installation
 ============
 
-tumgr is now available on CRAN: install.packages("tumgr")
+tumgr is now available on CRAN:
+
+``` r
+install.packages("tumgr")  
+```
+
+    ## Installing package into 'C:/Users/Julia/Documents/R/win-library/3.2'
+    ## (as 'lib' is unspecified)
+
+    ## package 'tumgr' successfully unpacked and MD5 sums checked
+    ## 
+    ## The downloaded binary packages are in
+    ##  C:\Users\Julia\AppData\Local\Temp\RtmpcXNZXa\downloaded_packages
 
 Usage
 =====
