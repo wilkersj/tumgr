@@ -1,0 +1,976 @@
+/*
+**********************************************************************************;
+*tumgr written for SAS
+*LICENSE: MIT + file LICENSE
+*YEAR: 2015
+*COPYRIGHT HOLDER: Julia Wilkerson
+*
+*date: 6/18/15
+*author: Julia Wilkerson, wilkersj@mail.nih.gov
+*arguments:
+*     (1) input is the user input data consisting of unique patient ids,
+*         evaluation dates and sizes
+*     (2) pval is the user set p-value for analysis
+*     (3) directory path for output
+*outputs: plots of observed and predicted data, growth rate estimates, summary
+*
+**********************************************************************************;
+*/
+
+%macro tumgr(input,pval,dir);
+
+*sort;
+%macro st(dset, var);
+proc sort data=&dset;
+	by &var;
+run;
+%mend;
+
+proc sql;
+   create table work.f
+       (IDmod num);
+quit;
+
+proc sql;
+  insert into work.f(IDmod)
+    values(1)
+	values(2)
+	values(3)
+	values(4);
+quit;
+
+*prep input data;
+%macro inputprp;
+%st(input, name date);
+
+data input2;
+	set input;
+	by name date;
+	first_name=first.name;
+	last_name=last.name;
+run;
+
+data input3;
+	set input2;
+	if first_name EQ 1 then do;
+		time0=date;
+		size0=size;
+	end;
+run;
+
+data input4(drop= date size first_name last_name);
+	set input3;
+	if first_name EQ 1 then output;
+run;
+
+%st(input, name);
+%st(input4, name);
+data input5;
+	merge input input4;
+	by name;
+run;
+
+data input5a;
+set input5;
+if name ne '.' then output;
+run;
+
+proc sql;
+	create table input5a2 as
+	select distinct name
+	from input5a;
+quit;
+
+data nameid0;
+	set input5a2;
+	count+1;
+run;
+
+data nameid;
+	set nameid0;
+	rename count=ID;
+run;
+
+%st(input5a, name);
+%st(nameid, name);
+
+data input5b;
+	merge input5a nameid;
+	by name;
+run;
+
+data input5c;
+	set input5b;
+	time= (date-time0)+1;
+	if size0 NE 0 then do;
+		f0= (size / size0);
+	end;
+	else if size0 EQ 0 then do;
+		f0= (size+.5 / size0+.5);
+	end;
+run;
+
+data input5d;
+	set input5c;
+	if f0 ne '.' then output;
+run;
+
+proc sql;
+create table input5d1 as
+select name, time, round(f0,0.00001) format=6.5 as f
+from input5d;
+quit;
+
+data input5d2;
+	merge input5d input5d1;
+	by name time;
+run;
+
+data input5f;
+	set input5d2;
+		by name time;
+		first_name=first.name;
+		last_name=last.name;
+run;
+
+data input5g;
+	set input5f;
+	count+1;
+	if first_name EQ 1 then count=1;
+run;
+
+data input5g2(keep=name last_name count);
+	set input5g(where=(last_name=1));
+run;
+
+data numcyc(drop=last_name);
+	set input5g2;
+	rename count=numcyc;
+run;
+
+data input6a;
+	merge input5d2 numcyc;
+	by name;
+run;
+
+data input6a1;
+	set input6a;
+	if numcyc GE 2 then output;
+run;
+
+data input6b(keep=name);
+	set input6a1;
+run;
+
+proc sql;
+create table input6b2 as
+select distinct name
+from input6b;
+quit;
+
+%st(input6b2, name);
+
+data input6b3;
+	set input6b2;
+	merge=1;
+	count+1;
+	if first.name then count=1;
+run;
+
+ods listing close;
+proc means data=input6b3 ;
+	var name;
+	output out=input6b4;
+run;
+
+data input6b5(keep=_STAT_ name);
+	set input6b4(where=(_STAT_='N'));
+run;
+data input6b6(drop=_STAT_);
+	set input6b5;
+	merge=1;
+	rename name=lastidorig;
+run;
+
+data input6b7;
+	merge input6b3 input6b6;
+	by merge;
+run;
+
+data input6b8(drop=merge);
+	set input6b7;
+	rename count=origi;
+run;
+data input6c;
+	merge input6a1 input6b8;
+	by name;
+run;
+
+*check 2 eval cases for 20% difference in measurements;
+data two;
+	set input6c;
+	if numcyc EQ 2 and f NE 1 then output;
+run;
+
+data twob(keep=name remove);
+	set two;
+	if f > .8 & f < 1.2 then do;
+		remove=1;
+	end;
+	else do;
+		remove=0;
+	end;
+run;
+
+%st(input6c,name);
+%st(twob,name);
+
+data input6d;
+	merge twob input6c;
+	by name;
+run;
+
+data input6e;
+	set input6d;
+	if remove NE 1 then output;
+run;
+
+*input dset;
+data input6(drop=remove);
+	set input6e;
+run;
+
+*excluded;
+data exc2;
+	set input6d;
+	if remove EQ 1 then output;
+run;
+%mend;
+
+*macro to model cases with sufficient data;
+%macro runmod2;
+%do i=1 %to 4 %by 1;
+
+data f2;
+	set foo;
+	if IDmod EQ &i then output;
+run;
+
+data _null_;
+	set f2;
+	call symput('fit',fit);
+	call symput('mod',model);
+	call symput('start',start);
+	call symput('cc',cc);
+	call symput('K',K);
+	call symput('lb',lb);
+	call symput('ub',ub);
+run;
+
+data input8&i;
+	set input7;
+	if numcyc GT &K then output;
+run;
+
+ods output ParameterEstimates=pe Anova=anova;
+    proc nlin data=input8&i  METHOD=MARQUARDT MAXITER=1000 ;
+		bounds &lb;
+        parms &start;
+        model &mod;
+          by origi;
+	    id name origi;
+		output out=out p=predict residual=res weight=weight stdi=stderr;
+	run;
+
+data anova2&i;
+ set anova;
+    fit="&fit";
+	IDmod=&i;
+run;
+
+*remove bound error cases ;
+data b2(keep=origi remove);
+	set pe;
+	remove=1;
+	if label NE "" then output;
+run;
+
+%st(b2,origi);
+%st(pe,origi);
+
+data b3;
+	merge b2 pe;
+	by origi;
+run;
+
+data b4;
+	set b3;
+	if remove NE 1 then output;
+run;
+
+data peX(drop=remove);
+	set b4;
+run;
+
+data pe2;
+    set peX;
+    fit="&fit";
+	IDmod=&i;
+	if Probt LE &pval then do;
+		sig=1;
+	end;
+	else if Probt GT &pval then do;
+		sig=0;
+	end;
+run;
+
+%st(pe2, origi);
+
+proc means data=pe2 sum;
+	var sig;
+	by origi;
+	output out=sumsig sum=sumsig;
+run;
+
+data sig(keep=origi sumsig);
+	set sumsig;
+run;
+
+%st(sig, origi);
+%st(pe2,origi);
+
+data pe3;
+	merge pe2 sig;
+	by origi;
+run;
+
+data pe4;
+	set pe3;
+	K=&K;
+	if K EQ sumsig then do;
+		sigyes=1;
+	end;
+	else if K NE sumsig then do;
+		sigyes=0;
+	end;
+run;
+
+data pe4&i (drop=K);
+	set pe4;
+run;
+
+%st(out, name);
+
+data outsum(keep=origi ss ms FValue ProbF);
+	set anova2&i;
+	if source EQ "Error" then output;
+run;
+
+%st(outsum,origi);
+%st(out,origi);
+
+data out3;
+	merge out outsum;
+	by origi;
+run;
+
+data out4;
+	set out3;
+		if maxtime=time then do;
+		LL= -numcyc*(log(2*3.141593) + 1 - log(numcyc) - sum(log(weight)) + log(ss))/2;
+		end;
+	by name;
+run;
+
+%st(sig, origi);
+%st(out4,origi);
+data sig2;
+	merge out4 sig;
+	by origi;
+run;
+
+data sig3&i;
+	set sig2;
+	K=&k;
+	lm=numcyc;
+	fit="&fit";
+	IDmod=&i;
+	if LL NE "." then do;
+		AIC=numcyc*log(SS/numcyc) + 2*&k;
+		AICc=(AIC + 2*K*(K+1)/(lm-K-1));
+	end;
+	else if LL EQ "." then do;
+		AIC=".";
+		AICc=".";
+	end;
+run;
+%end;
+
+data zobspredAIC;
+	merge
+	%do i=1 %to 4 %by 1;
+	sig3&i
+	%end;
+	;
+	by fit IDmod;
+run;
+
+data zanova;
+	merge
+	%do i=1 %to 4 %by 1;
+	anova2&i
+	%end;
+	;
+	by fit IDmod;
+run;
+
+data zpest;
+	merge
+	%do i=1 %to 4 %by 1;
+	pe4&i
+	%end;
+	;
+	by fit IDmod;
+run;
+%mend;
+
+*macro to plot selected model for included cases;
+%macro plotmod(maxi);
+%do i=1 %to &maxi %by 1;
+data c;
+	set z3;
+	if selectID EQ &i then output;
+run;
+
+data _null_;
+        set c;
+        call symput ('name' , put(name,6.0));
+        call symput ('fit' ,fit);
+run;
+
+
+ods proclabel="ID=&name, fit=&fit";
+title1 j=c h=4 font="ID=&name, fit=&fit";
+goptions ftext=swissb ctext=BLACK htext=2 noborder;
+symbol1 c=BLUE ci=BLUE v=DOT height=3 cells
+        interpol=NONE l=1 w=3;
+symbol2 c=WHITE ci=RED v=CIRCLE height=.4 cells
+interpol=smooth l=1 w=5 ;
+axis1 value=(h=2 f='Arial/bo') width=3 label=(j=c h=3 f='Arial/bo' "Days") major=(height=.20cm width=3 n=5) minor=none;
+axis2 value=(h=2 f='Arial/bo') width=3 label=(angle=90 j=l h=3 f='Arial/bo' "Tumor Q/Q0") major=(height=.20cm width=3 n=5) minor=none;
+
+proc gplot data=c;
+        plot f*time predict*time/overlay
+                        haxis=axis1 vaxis=axis2 noframe ;
+run;
+title;
+quit;
+%end;
+%mend;
+
+
+*prepare input data;
+%inputprp;
+
+*max time by patient;
+%st(input6, name time);
+proc means data=input6 max;
+	var time;
+	by name;
+	output out=maxt max=maxtime;
+run;
+%st(input6, name);
+
+data maxt2(drop=_TYPE_ _FREQ_);
+	set maxt;
+run;
+%st(maxt2,name);
+data input7;
+	merge input6 maxt2;
+	by name;
+run;
+
+data foo;
+	set f;
+	if IDmod EQ 4 then do;
+		fit="gdphi";
+		model="f=((1-p)*exp(gt*time))+((p)*exp(-dt*time))";
+		start="p=.9, gt=.00511, dt=.00511";
+		cc="darkblue";
+		IDmodel=4;
+		K=3;
+		gvar="gt";
+		dvar="dt";
+		pvar="p";
+		lb="1> p >0; bounds 1> gt >0; bounds 1> dt >0";
+		ub="gt<1 dt<1 p<1";
+	end;
+	else if IDmod EQ 2 then do;
+		fit="dx";
+		model="f=exp(-dx*time)";
+		start="dx=.00511";
+		cc="purple";
+		IDmodel=2;
+		K=1;
+		gvar="";
+		dvar="dx";
+		pvar="";
+		lb="dx>=0";
+		ub="dx<1";
+	end;
+	else if IDmod EQ 3 then do;
+		fit="gx";
+		model="f=exp(gx*time)";
+		start="gx=.00511";
+		cc="navy";
+		IDmodel=3;
+		K=1;
+		gvar="gx";
+		dvar="";
+		pvar="";
+		lb="gx>=0";
+		ub="gx<1";
+	end;
+	else if IDmod EQ 1 then do;
+		fit="gd";
+		model="f=exp(-d*time)+exp(g*time)-1";
+		start="g=.00511 d=.00511";
+		cc="blue";
+		IDmodel=1;
+		K=2;
+		gvar="g";
+		dvar="d";
+		pvar="";
+		lb="g>=0; bounds d>=0";
+		ub="g<1; bounds d<1";
+	end;
+run;
+
+*model data;
+%runmod2;
+
+data nameorg(keep=name origi);
+	set input7;
+run;
+
+%st(zpest,origi);
+%st(nameorg,origi);
+data est;
+	merge zpest nameorg;
+	by origi;
+run;
+
+data est1(drop=origi label sig sumsig sigyes alpha lowercl uppercl);
+	retain name;
+	set est;
+run;
+
+*AIC table;
+data zaic(keep=name origi LL K lm fit IDmod AIC AICc);
+	set zobspredaic;
+	if AIC NE "." then output;
+run;
+
+%st(zpest,origi fit);
+%st(zaic,origi fit);
+
+data zz;
+	merge zpest zaic;
+	by origi fit;
+run;
+
+*subset to where all params sig given user pval;
+data zzz;
+	set zz;
+	if parameter NE "" then output;
+run;
+data zz1(drop=label);
+	set zzz;
+	if sigyes EQ 1 then output;
+run;
+
+proc sql;
+create table z2 as
+select distinct name, origi, fit, IDmod, AIC, AICc
+from zz1;
+quit;
+
+%st(z2,name);
+
+proc means data=z2 min;
+	var AIC;
+	by name;
+	output out=zmin min=AIC;
+run;
+
+data zmin2(drop= _TYPE_ _FREQ_);
+	set zmin;
+	keep=1;
+run;
+
+*merge min AIC with z2 by name and AIC;
+%st(zmin2,name AIC);
+%st(z2,name AIC);
+
+data sel0;
+	merge z2 zmin2;
+	by name AIC;
+run;
+
+data sel1;
+	set sel0;
+	if keep EQ 1 then output;
+run;
+
+data sel(keep=name type selectedFit);
+	retain nameselectedFit;
+	set sel1;
+	rename fit=selectedFit;
+run;
+
+*merge selected fit info with estimates;
+%st(sel,name);
+%st(est1,name);
+
+data est2a;
+	merge  sel est1;
+	by name;
+run;
+
+data est2b(drop=IDmod);
+	retain name type selectedFit fit;
+	set est2a;
+	if selectedFit EQ "" then do;
+		type="excluded";
+		exclusionreason="not fit";
+	end;
+	else if selectedFit NE "" then do;
+		type="included";
+	end;
+run;
+
+proc sql;
+create table est2 as
+select distinct *
+from est2b;
+quit;
+
+*subset to where fit equeals selected;
+data est3(drop=exclusionreason);
+	set est2;
+	if fit EQ selectedFit then output;
+run;
+
+%st(est3, name);
+%st(numcyc, name);
+
+data est4;
+	merge est3 numcyc;
+	by name;
+run;
+
+data est5;
+	set est4;
+	rename numcyc=N;
+	if type NE "" then output;
+run;
+
+proc export data=est5
+	outfile="&dir\allest.csv"
+	dbms=CSV replace;
+	putnames=yes;
+run;
+
+*index included for plotting;
+proc sql;
+create table z0
+as select distinct name, selectedFit
+from est3;
+quit;
+
+data z00;
+	set z0;
+	count+1;
+run;
+
+data z000;
+	set z00;
+	rename count=selectID;
+run;
+
+
+%st(zobspredaic, name);
+%st(z000, name);
+data z1;
+	merge z000 zobspredaic;
+	by name;
+run;
+
+data z3;
+	set z1;
+	if selectedFit=fit then output;
+run;
+
+proc sql;
+create table z3a as
+select distinct name
+from z3;
+quit;
+
+proc means data=z3a n;
+	var name;
+	output out=maxplotid n=maxplot;
+run;
+
+*export plots to PDF;
+ods pdf file="&dir/tumgr Plots.pdf" title="tumgr plots date=&sysdate" author='Julia Wilkerson';
+data _null_;
+	set maxplotid;
+	call symput('maxplot',put(maxplot,3.0));
+run;
+%plotmod(&maxplot);
+ods pdf close;
+
+
+*generate results table;
+data res;
+	set est3;
+	if selectedFit=fit then output;
+run;
+
+data f2(keep=fit gvar dvar pvar);
+	set foo;
+run;
+
+%st(res, fit);
+%st(f2, fit);
+
+data res2;
+	merge f2 res;
+	by fit;
+run;
+
+data res3d(keep=name type selectedfit d);
+	set res2;
+	if dvar=parameter then do;
+		d=estimate;
+	end;
+	if d NE "." then output;
+run;
+
+data res3phi(keep=name type selectedfit phi);
+	set res2;
+	if pvar=parameter then do;
+		phi=estimate;
+	end;
+	if phi NE "." then output;
+run;
+
+%st(res3d, name type selectedfit);
+%st(res3phi, name type selectedfit);
+
+data res4;
+	merge res3d res3phi;
+	by name type selectedfit;
+run;
+
+data resg;
+	set res2;
+	if gvar=parameter then output;
+run;
+
+data resg2(keep=name type selectedfit g0 gt);
+	set resg;
+	if parameter NE "gt" then do;
+		g0=estimate;
+	end;
+	else if parameter EQ "gt" then do;
+		gt=estimate;
+	end;
+run;
+
+%st(resg2, name type selectedfit);
+%st(res4, name type selectedfit);
+
+data res5;
+	merge res4 resg2;
+	by name type selectedfit;
+run;
+
+data res6;
+	set res5;
+	if selectedfit NE "gdphi" then do;
+		g=g0;
+	end;
+	else if selectedfit EQ "gdphi" then do;
+		g=gt*sqrt((1-phi));
+	end;
+run;
+
+data res7(drop=g0 gt);
+	retain name type selectedfit g d phi;
+	set res6;
+run;
+
+%st(res7, name);
+%st(numcyc, name);
+
+data res8;
+	merge numcyc res7;
+	by name;
+run;
+
+data res8b;
+	set res8;
+	rename numcyc=nobs;
+run;
+
+*merge exclusion reason;
+proc sql;
+create table exreason as
+select distinct name, exclusionreason
+from est2b;
+quit;
+
+%st(exreason, name);
+%st(res8b);
+
+data res8c;
+	merge res8b exreason;
+	by name;
+run;
+
+data res8d;
+	set res8c;
+	if type EQ "" and exclusionreason EQ "" and nobs GT 2 then do;
+		type2="excluded";
+		sf="missing or error data";
+		Analyzed="no ";
+	end;
+	else if type EQ "" and nobs=1 then do;
+		type2="excluded";
+		sf="only 1 eval";
+		Analyzed="no";
+	end;
+	else if type EQ "" and nobs=2 then do;
+		type2="excluded";
+		sf="2 evals not 20% diff";
+		Analyzed="no";
+	end;
+	else if type EQ "" and exclusionreason NE "" then do;
+		type2="excluded";
+		sf="not fit";
+		Analyzed="yes";
+	end;
+	else if type NE "" then do;
+		type2=type;
+		sf=selectedfit;
+		Analyzed="yes";
+	end;
+run;
+
+data res8e(drop=type selectedfit exclusionreason);
+	retain name nobs analyzed type2 sf;
+	set res8d;
+run;
+
+data res8f;
+	set res8e;
+	rename type2=type sf=selectedFit;
+run;
+
+data res8g(drop=analyzed);
+	set res8f;
+run;
+
+*export results table;
+proc export data=res8g
+	outfile="&dir\results.csv"
+	dbms=CSV replace;
+	putnames=yes;
+run;
+
+*generate models table;
+%st(res8f, type analyzed selectedfit);
+
+proc means data=res8f n;
+	var name;
+	by type analyzed selectedfit;
+	output out=sumst n=N;
+run;
+
+proc means data=sumst sum;
+	var N;
+	output out=sumtot sum=tot;
+run;
+
+data stot(drop=_FREQ_);
+	set sumtot;
+run;
+
+data sumst2;
+	merge sumst stot;
+	by _TYPE_;
+run;
+
+data sumst3(drop= _TYPE_ _FREQ_);
+	set sumst2;
+	Percentage=round((N/tot),.01)*100;
+	rename type=Group analyzed=Analyzed ;
+run;
+
+data models(drop=tot);
+	set sumst3;
+	rename selectedFit=Type;
+run;
+
+*export models table;
+proc export data=models
+	outfile="&dir\models.csv"
+	dbms=CSV replace;
+	putnames=yes;
+run;
+
+*generate sumstats table;
+%macro sumpar(vr,i);
+proc means data=res8f N median P25 P75 mean STD;
+	var &vr;
+	output out=sout n=N median=Median P25=P25 P75=P75 mean=Mean std=SD;
+run;
+data s&i (drop=_TYPE_ _FREQ_ p25 p75);
+	retain Parameter N Median IQR Mean SD;
+	set sout;
+	Parameter="&vr";
+	IQR="("||p25||","||p75||")";
+	id=&i;
+run;
+%mend;
+%sumpar(g,1);
+%sumpar(d,2);
+%sumpar(phi,3);
+
+data sumstat;
+	merge s3 s1 s2;
+	by Parameter id;
+run;
+
+%st(sumstat, id);
+
+data sumstats(drop=id);
+	set sumstat;
+run;
+
+*export sumstats table;
+proc export data=sumstats
+	outfile="&dir\sumstats.csv"
+	dbms=CSV replace;
+	putnames=yes;
+run;
+
+*end tumgr macro;
+%mend;
+
+*example below;
+
+* %let dir=C:\Users
+* %tumgr(input, .1, &dir);

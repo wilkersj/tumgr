@@ -21,7 +21,7 @@ install.packages("tumgr")
     ## package 'tumgr' successfully unpacked and MD5 sums checked
     ## 
     ## The downloaded binary packages are in
-    ##  C:\Users\Julia\AppData\Local\Temp\RtmpUJY3yJ\downloaded_packages
+    ##  C:\Users\Julia\AppData\Local\Temp\RtmpQjqGOD\downloaded_packages
 
 Usage
 =====
