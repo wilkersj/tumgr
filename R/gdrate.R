@@ -27,7 +27,7 @@ gdrate <- function(input, pval, plots) {
         outgd2 <- stats::nls(eval(parse(text = paste(v$model))), data = jdta,
                       start = eval(parse(text = paste(v$start))),
                       algorithm = 'port',
-                      control = nls.control(maxiter = 1000, warnOnly = FALSE, minFactor = .000001),
+                      control = stats::nls.control(maxiter = 1000, warnOnly = FALSE, minFactor = .000001),
                       lower = eval(parse(text = paste(v$lb))),
                       upper = eval(parse(text = paste(v$ub))))
       }, silent = TRUE)

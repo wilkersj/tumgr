@@ -9,7 +9,7 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Installation
 ============
 
-tumgr is now available on CRAN:
+To install the CRAN version:
 
 ``` r
 install.packages("tumgr")  
@@ -21,7 +21,14 @@ install.packages("tumgr")
     ## package 'tumgr' successfully unpacked and MD5 sums checked
     ## 
     ## The downloaded binary packages are in
-    ##  C:\Users\Julia\AppData\Local\Temp\RtmpQjqGOD\downloaded_packages
+    ##  C:\Users\Julia\AppData\Local\Temp\Rtmpau8LBm\downloaded_packages
+
+To install the latest developmental version on GitHub:
+
+``` r
+#install.packages("devtools")
+#devtools::install_github("wilkersj/tumgr")
+```
 
 Usage
 =====
@@ -37,10 +44,13 @@ library(tumgr)
 # example data  
 data(sampleData)
 
-# generate results with plots set to off
-#par(mfrow=c(3, 2))
-out <- gdrate(sampleData, 0.10, FALSE)
+# generate sample plots
+#par(mfrow=c(2, 3))
+#out <- gdrate(sampleData, 0.10, TRUE)
 #par(mfrow=c(1, 1))
+
+# generate results with plots set to off
+out <- gdrate(sampleData, 0.10, FALSE)
 
 # summary of cases
 out$models
