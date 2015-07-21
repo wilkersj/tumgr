@@ -24,7 +24,7 @@ gdrate <- function(input, pval, plots) {
 
     if(!exists("outgd") && i == 4 ){
       try({
-        outgd2 <- nls(eval(parse(text = paste(v$model))), data = jdta,
+        outgd2 <- stats::nls(eval(parse(text = paste(v$model))), data = jdta,
                       start = eval(parse(text = paste(v$start))),
                       algorithm = 'port',
                       control = nls.control(maxiter = 1000,
@@ -484,7 +484,6 @@ gdrate <- function(input, pval, plots) {
 
     # Function to generate outlist1 for gdrate fx return
     genoutlist <- function(xx) {
-      #y <- data.frame(aggregate(xx$name ~ xx$calcfinal, data = xx, length))
       y <- data.frame(stats::aggregate(xx$name ~ xx$calcfinal, data = xx, length))
 
       colnames(y) <- c("Type", "N")
