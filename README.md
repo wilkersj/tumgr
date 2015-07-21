@@ -21,7 +21,7 @@ install.packages("tumgr")
     ## package 'tumgr' successfully unpacked and MD5 sums checked
     ## 
     ## The downloaded binary packages are in
-    ##  C:\Users\Julia\AppData\Local\Temp\RtmpcXNZXa\downloaded_packages
+    ##  C:\Users\Julia\AppData\Local\Temp\RtmpUJY3yJ\downloaded_packages
 
 Usage
 =====
@@ -38,9 +38,9 @@ library(tumgr)
 data(sampleData)
 
 # generate results with plots set to off
-par(mfrow=c(3, 2))
+#par(mfrow=c(3, 2))
 out <- gdrate(sampleData, 0.10, FALSE)
-par(mfrow=c(1, 1))
+#par(mfrow=c(1, 1))
 
 # summary of cases
 out$models

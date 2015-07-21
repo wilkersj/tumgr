@@ -30,9 +30,9 @@ library(tumgr)
 data(sampleData)
 
 # generate results with plots set to off
-par(mfrow=c(3, 2))
+#par(mfrow=c(3, 2))
 out <- gdrate(sampleData, 0.10, FALSE)
-par(mfrow=c(1, 1))
+#par(mfrow=c(1, 1))
 
 # summary of cases
 out$models
