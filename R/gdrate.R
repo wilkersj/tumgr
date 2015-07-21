@@ -12,13 +12,32 @@ gdrate <- function(input, pval, plots) {
     jdta <- data.frame(cbind(time, f))
     colnames(jdta) <- c("time", "f")
     v <- subset(foo, foo$IDmodel == i)
-    outgd <- nlsLM(eval(parse(text = paste(v$model))), data = jdta, start = eval(parse(text = paste(v$start))),
-                   control = nls.lm.control(maxiter = 1000, maxfev = 1000, factor = 0.01,
+
+    try({
+      outgd <- nlsLM(eval(parse(text = paste(v$model))), data = jdta, start = eval(parse(text = paste(v$start))),
+                     control = nls.lm.control(maxiter = 1000, maxfev = 1000, factor = 0.01,
+                                              ftol = sqrt(.Machine$double.eps),
+                                              ptol = sqrt(.Machine$double.eps)),
+                     lower = eval(parse(text = paste(v$lb))),
+                     upper = eval(parse(text = paste(v$ub))))
+    }, silent = TRUE)
+
+    if(!exists("outgd") && i == 4 ){
+      try({
+        outgd2 <- nls(eval(parse(text = paste(v$model))), data = jdta,
+                      start = eval(parse(text = paste(v$start))),
+                      algorithm = 'port',
+                      control = nls.control(maxiter = 1000,
                                             ftol = sqrt(.Machine$double.eps),
-                                            ptol = sqrt(.Machine$double.eps)),
-                                            lower = eval(parse(text = paste(v$lb))),
-                   upper = eval(parse(text = paste(v$ub))))
-    return(outgd)
+                                            ptol = sqrt(.Machine$double.eps),
+                                            warnOnly = FALSE,minFactor = .000001),
+                      lower = eval(parse(text = paste(v$lb))),
+                      upper = eval(parse(text = paste(v$ub))))
+      }, silent = TRUE)
+      return(outgd2)
+    } else {
+      return(outgd)
+    }
   }
 
   # Function to prepare user input data for modeling
@@ -174,7 +193,11 @@ gdrate <- function(input, pval, plots) {
 
     # model given input and i
     outgd <- gdX(input1, i)
-    newx <- seq(0, tseq, by = 1)
+    newx <- seq(1, tseq, by = 1)
+    dnew <- data.frame(time = newx)
+    #prd <- stats::predict(outgd, newdata = dnew)
+
+    #         length(seq(1, tseq, by = 1))
     prd <- stats::predict(outgd, newdata = data.frame(time = newx))
 
     # merge pred with input for calc rmse
@@ -191,7 +214,7 @@ gdrate <- function(input, pval, plots) {
     #par(mar = c(6.5, 4.5, 1, 1.5))
     graphics::par(mar = c(6.5, 4.5, 1, 1.5))
     graphics::plot(f ~ time, data = jdta, frame = FALSE, col = "red", cex = 1.3, cex.axis = 1.4,
-         cex.lab = 1.6, pch = 19, xlab = "Days", ylab = "Tumor Q/Q0", main = tit)
+                   cex.lab = 1.6, pch = 19, xlab = "Days", ylab = "Tumor Q/Q0", main = tit)
     #lines(newx, prd, col = cc, lty = 1, lwd = 3)
     graphics::lines(newx, prd, col = cc, lty = 1, lwd = 3)
 
@@ -202,7 +225,7 @@ gdrate <- function(input, pval, plots) {
 
     # observed values
     graphics::points(f ~ time, data = jdta, pch = 21, col = c("black"), bg = "red", lwd = 1.2,
-           cex = 1.5)
+                     cex = 1.5)
     # return(rmse)
   }
 
@@ -666,4 +689,3 @@ gdrate <- function(input, pval, plots) {
   result <- generateresults()
   return(result)
 }
-

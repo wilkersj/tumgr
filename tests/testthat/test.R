@@ -1,39 +1,39 @@
 
 #------------- generate test data-------------#
-
-# empty dataset
-a <- data.frame(cbind(name = NaN, date = NaN, size = NaN))
-# dataset with non-numeric data
-b <- data.frame(cbind(name = 'd', date = 4, size= 'd'))
-# input producing not fit data only
-name <- c(rep(1,5))
-date <- c(1, 30, 60, 90, 120)
-size <- c(1, 6, .2, 7, .1)
-c <- data.frame(cbind(name, date, size))
-# input producing non-analyzed excluded cases only
-name <- c(rep(1,2),2)
-date <- c(1, 30, 1)
-size <- c(1, .9, 1)
-d <- data.frame(cbind(name, date, size))
-# input producing not fit and non-analyzed excluded cases only
-e <- data.frame(rbind(c, d))
-# input producing included cases only, check that sumstats is data frame
-data("sampleData")
-snam <- c(720001,780001,810002)
-f <- sampleData[(sampleData$name %in% snam), ]
-# input producing included, not fit, and non-analyzed excluded cases
-tall <- data.frame(rbind(c, d, f))
-# input producing included and not fit cases
-h <- data.frame(rbind(c, f))
-# input producing included and non-analyzed excluded cases
-g <- data.frame(rbind(d, f))
-# input with improper colnames
-name <- c(rep(1,5))
-day <- c(1, 30, 60, 90, 120)
-size <- c(1, 6, .2, 7, .1)
-l <- data.frame(cbind(name, day, size))
-
-
+#
+# # empty dataset
+# a <- data.frame(cbind(name = NaN, date = NaN, size = NaN))
+# # dataset with non-numeric data
+# b <- data.frame(cbind(name = 'd', date = 4, size= 'd'))
+# # input producing not fit data only
+# name <- c(rep(1,5))
+# date <- c(1, 30, 60, 90, 120)
+# size <- c(1, 6, .2, 7, .1)
+# c <- data.frame(cbind(name, date, size))
+# # input producing non-analyzed excluded cases only
+# name <- c(rep(1,2),2)
+# date <- c(1, 30, 1)
+# size <- c(1, .9, 1)
+# d <- data.frame(cbind(name, date, size))
+# # input producing not fit and non-analyzed excluded cases only
+# e <- data.frame(rbind(c, d))
+# # input producing included cases only, check that sumstats is data frame
+# data("sampleData")
+# snam <- c(720001,780001,810002)
+# f <- sampleData[(sampleData$name %in% snam), ]
+# # input producing included, not fit, and non-analyzed excluded cases
+# tall <- data.frame(rbind(c, d, f))
+# # input producing included and not fit cases
+# h <- data.frame(rbind(c, f))
+# # input producing included and non-analyzed excluded cases
+# g <- data.frame(rbind(d, f))
+# # input with improper colnames
+# name <- c(rep(1,5))
+# day <- c(1, 30, 60, 90, 120)
+# size <- c(1, 6, .2, 7, .1)
+# l <- data.frame(cbind(name, day, size))
+#
+#
 # #------------- tests-------------------------#
 # test_that("expected output models is not null",{
 #
