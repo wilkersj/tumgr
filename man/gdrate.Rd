@@ -35,7 +35,7 @@ The fourth model (below) contains an additional parameter, \eqn{\phi}, which rep
 
 The Levenberg-Marquardt algorithm is used to solve these 4 non-linear least squares problems (using package \pkg{minpack.lm}) and among models where all parameters are significant predictors (given user supplied \code{pval}), the model which minimizes the AIC is the selected model for a given patient from which tumor growth rates are obtained (this output is contained in \code{results}).
 
-Patients with insufficient or missing data, or patients with sufficient data where no model converged are excluded and noted individually in \code{results} and summarized in \code{models} with one of the following explanations: no data (cases with all missing data), only 1 or 2 data points (where the latter has less than 20 percent difference in tumor measurements), error data (where only one unique measurement value for a patient that is repeated 3 or more times, and/or where both the initial and final measurement value is zero), or not fit.
+Patients with insufficient or missing data, or patients with sufficient data where no model converged are excluded and noted individually in \code{results} and summarized in \code{models} with one of the following explanations: no data (cases with all missing data), only 1 or 2 data points (where the latter has less than 20 percent difference in tumor measurements), error data (where only one unique measurement value for a patient that is repeated 3 or more times, and/or where both the initial and final measurement value is zero), or not fit.  Patient data that does not fall into one of the categories listed above are labeled as included.  Plots can be generated for all included cases (by setting the plot argument to TRUE), where the observed and predicted values from the selected model (labeled in plot legend) are depicted.
 
 %%\tabular{ll}{
 %%Package: \tab gdRate\cr
@@ -48,10 +48,50 @@ Patients with insufficient or missing data, or patients with sufficient data whe
 
 }
 \value{
-\item{models}{Data frame summarizing included (by model type selected), and excluded (by reason for exclusion) cases.}
-\item{sumstats}{Data frame containing descriptive statistics of growth rate results (N, median, IQR, mean and SD).}
-\item{results}{Data frame containing growth rate results (g,d,phi), an indicator of included or excluded status, and the number of evaluations for individual patients. }
-\item{allest}{Data frame containing estimates (with respective SE, T value, and p-value) from all models that converged for each patient.  }
+\item{models}{Data frame summarizing included (by model type selected), and excluded (by reason for exclusion) cases. Columns are described below:
+\tabular{ll}{
+\tab * Group = indicator of included or excluded status\cr
+\tab * Analyzed = indicator of whether group was analyzed \cr
+\tab * Type = either selected model or reason for exclusion \cr
+\tab * N = number of cases for given row data \cr
+\tab * Percentage = percentage of cases for given row data \cr
+}}
+\item{sumstats}{Data frame containing descriptive statistics of growth rate results (N, median, IQR, mean and SD). Columns are described below:
+\tabular{ll}{
+\tab * Parameter = parameter for respective row data\cr
+\tab * N = the number cases with parameter \cr
+\tab * Median = median of parameter \cr
+\tab * IQR = interquartile range of parameter \cr
+\tab * Mean = mean of parameter \cr
+}
+}
+\item{results}{Data frame containing growth rate results (g,d,phi), an indicator of included or excluded status, and the number of evaluations for individual patients.  Columns are described below:
+\tabular{ll}{
+\tab * name = the patient identifier\cr
+\tab * nobs = the number of data points analyzed \cr
+\tab * type = included or excluded status \cr
+\tab * selectedFit = model selected for patient \cr
+\tab * g = growth rate estimate \cr
+\tab * d = regression rate estimate \cr
+\tab * phi = phi estimate (proportion tumor killed by treatment) \cr
+}
+}
+%%end tabular}
+\item{allest}{Data frame containing estimates (with respective SE, T value, and p-value) from all models that converged for each patient. Columns are described below:
+\tabular{ll}{
+\tab * name = the patient identifier\cr
+\tab * type = included or excluded status \cr
+\tab * selectedFit = model selected for patient \cr
+\tab * fit = the model for the respective row data \cr
+\tab * parameter = the parameter for the respective row data \cr
+\tab * Estimate = the estimated parameter value \cr
+\tab * StdError = the standard error of the estimate \cr
+\tab * t.value = the T value for the estimated value \cr
+\tab * p.value = the p-value for the estimated value \cr
+\tab * N = the number of data points analyzed \cr
+}
+%%end tabular
+}
 }
 
 
@@ -69,6 +109,18 @@ Patients with insufficient or missing data, or patients with sufficient data whe
 \cite{Stein WD et al. (2011). Tumor regression and growth rates determined in five intramural NCI prostate cancer trials: the growth rate as an indicator of therapeutic efficacy. Clinical Cancer Research, 17:907--14.}
 
 \cite{Fojo A et al. (2010). Kinetic analysis of breast tumor decay and growth following ixabepilone plus capecitabine (IXA+CAP) versus capecitabine alone (CAP) to discern whether the superiority of the combination is a result of slower growth, enhanced tumor cell kill or both. Journal of Clinical Oncology, 28:137s.}
+
+\cite{Wilkerson J et al. (2010). Validation of a kinetic analysis of renal cancer regression and growth following treatment with sunitinib and interferon-alfa (IFN-{alpha}): Analysis of the pivotal randomized trial. Journal of Clinical Oncology, 28:15s.}
+
+\cite{Amiri-Kordestani L et al. (2011). Early assessment of efficacy of ixabepilone (IXA) by analysis of the rate of tumor growth and decay using data from phase II and phase III clinical trials in metastatic breast cancer (MBC) patients (Pts). Journal of Clinical Oncology, 29:15s.}
+
+\cite{Manasanch EE et al. (2011). Assessment of tumor growth (g) and regression (d) rate constants in patients with Multiple Myeloma (MM) shows that the superiority of bortezomib with liposomal Doxorubicin (PLD + B) over Bortezomib alone (B) is a result of reduced growth of refractory tumor cells and not of higher regression rates, and provides an earlier efficacy endpoint that allows for comparison across trials. ASH Annual Meeting Abstracts, 118:21.}
+
+\cite{Adesunloye B et al. (2012). Tumor regression and growth rates determined in two intramural NCI prostate cancer trials: The growth rate constant as an indicator of therapeutic efficacy. Journal of Clinical Oncology, 30:5s.}
+
+\cite{Codesido MB et al. (2012). Assessment and comparison of treatment efficacy in patients with colorectal cancer (CRC), using a novel methodology to estimate the rate of tumor regression (d) and growth (g). Annals of Oncology, 23:198.}
+
+\cite{Wood L et al. (2013). Autologous TARP peptide vaccination is associated with slowing in PSA velocity and a decrease in tumor growth rate in patients with Stage D0 prostate cancer. Cancer Research, 73:8s.}
 
 \cite{Gully JL et al. (2013). Effect of PSA-tricom, a pox-viral vaccine in prostate cancer (PCa), on tumor growth rates within 80 days after initiation in non-metastatic PCa. Journal of Clinical Oncology, 31(6).}
 
