@@ -31,21 +31,21 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p><a href="https://travis-ci.org/wilkersj/tumgr"><img src="https://travis-ci.org/wilkersj/tumgr.svg?branch=master" alt="Build Status"></a></p>
+        
+
+<p><a href="https://travis-ci.org/wilkersj/tumgr"><img src="https://travis-ci.org/wilkersj/tumgr.svg?branch=master" alt="Build Status"></a></p>
 
 <h1>
 <a id="tumgr" class="anchor" href="#tumgr" aria-hidden="true"><span class="octicon octicon-link"></span></a>tumgr</h1>
 
-<p>tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time. Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial data sets.</p>
+<p>tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time. Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial datasets.</p>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
 
-<p>Install using the 'devtools' package</p>
+<p>tumgr is now available on CRAN:</p>
 
-<div class="highlight highlight-r"><pre><span class="pl-c"># install.packages("devtools")  </span>
-<span class="pl-c"># library(devtools)  </span>
-<span class="pl-c"># install_github('wilkersj/tumgr')</span></pre></div>
+<div class="highlight highlight-r"><pre>install.packages(<span class="pl-s"><span class="pl-pds">"</span>tumgr<span class="pl-pds">"</span></span>)  </pre></div>
 
 <h1>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
@@ -59,9 +59,9 @@ library(<span class="pl-smi">tumgr</span>)</pre></div>
 <div class="highlight highlight-r"><pre><span class="pl-c"># example data  </span>
 data(<span class="pl-smi">sampleData</span>)
 
-<span class="pl-c"># generate results with plots set to off</span>
+<span class="pl-c"># generate results </span>
 par(<span class="pl-v">mfrow</span><span class="pl-k">=</span>c(<span class="pl-c1">3</span>, <span class="pl-c1">2</span>))
-<span class="pl-smi">out</span> <span class="pl-k">&lt;-</span> gdrate(<span class="pl-smi">sampleData</span>, <span class="pl-c1">0.10</span>, <span class="pl-c1">FALSE</span>)
+<span class="pl-smi">out</span> <span class="pl-k">&lt;-</span> gdrate(<span class="pl-smi">sampleData</span>, <span class="pl-c1">0.10</span>, <span class="pl-c1">TRUE</span>)
 par(<span class="pl-v">mfrow</span><span class="pl-k">=</span>c(<span class="pl-c1">1</span>, <span class="pl-c1">1</span>))
 
 <span class="pl-c"># summary of cases</span>
