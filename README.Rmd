@@ -8,12 +8,12 @@ output:
 
 [![Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)](https://travis-ci.org/wilkersj/tumgr)
 
-# Shiny app
-View the app [here](https://wilkersj.shinyapps.io/tumgrShiny)
 
 # tumgr
  tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time.  Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial datasets.
- 
+
+# Shiny app
+View the app [here](https://wilkersj.shinyapps.io/tumgrShiny) 
 
 # Installation
 To install the CRAN version:
