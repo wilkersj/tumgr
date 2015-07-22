@@ -1,6 +1,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)](https://travis-ci.org/wilkersj/tumgr)
 
+Shiny app
+=========
+
+View the app [here](https://wilkersj.shinyapps.io/tumgrShiny)
+
 tumgr
 =====
 
@@ -21,7 +26,7 @@ install.packages("tumgr")
     ## package 'tumgr' successfully unpacked and MD5 sums checked
     ## 
     ## The downloaded binary packages are in
-    ##  C:\Users\Julia\AppData\Local\Temp\RtmpgxW46a\downloaded_packages
+    ##  C:\Users\Julia\AppData\Local\Temp\Rtmp6JbCA8\downloaded_packages
 
 To install the latest developmental version on GitHub:
 
