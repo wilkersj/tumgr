@@ -6,6 +6,11 @@ tumgr
 
 tumgr is a tool to obtain tumor growth rates from clinical trial patient data. Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time. Tumor growth rates can be used to compare treatment efficacy and help predict overall survival in clinical trial datasets.
 
+Shiny app
+=========
+
+View the app [here](https://github.com/wilkersj/tumgrShiny)
+
 Installation
 ============
 
@@ -21,7 +26,7 @@ install.packages("tumgr")
     ## package 'tumgr' successfully unpacked and MD5 sums checked
     ## 
     ## The downloaded binary packages are in
-    ##  C:\Users\Julia\AppData\Local\Temp\Rtmpau8LBm\downloaded_packages
+    ##  C:\Users\Julia\AppData\Local\Temp\RtmpsdldWc\downloaded_packages
 
 To install the latest developmental version on GitHub:
 
