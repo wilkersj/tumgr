@@ -44,9 +44,7 @@ gdrate <- function(input, pval, plots) {
       stop("input argument missing")
     } else {
       try({
-        #input <- input1[complete.cases(input1), ]
         input <- input1[stats::complete.cases(input1), ]
-
       }, silent = TRUE)
       if (dim(input)[1] < 1) {
         stop("input contains no non-missing data")
@@ -193,8 +191,7 @@ gdrate <- function(input, pval, plots) {
     newx <- seq(1, tseq, by = 1)
     dnew <- data.frame(time = newx)
     #prd <- stats::predict(outgd, newdata = dnew)
-
-    #         length(seq(1, tseq, by = 1))
+    #length(seq(1, tseq, by = 1))
     prd <- stats::predict(outgd, newdata = data.frame(time = newx))
 
     # merge pred with input for calc rmse
@@ -255,12 +252,10 @@ gdrate <- function(input, pval, plots) {
 
     # by patient
     fid4 <- function(k) {
-      #k<-58
       input1a <- subset(c, c$ID4 == k)
 
       # by model given patient k
       fmod <- function(i) {
-        #i<-4
         name00 <- as.numeric(paste(unique(input1a$name)))
         fit <- paste(foo[foo$IDmodel == i, c(2)])
         iMod <- as.numeric(paste(foo[foo$IDmodel == i, c(1)]))
@@ -482,7 +477,6 @@ gdrate <- function(input, pval, plots) {
     # Function to generate outlist1 for gdrate fx return
     genoutlist <- function(xx) {
       y <- data.frame(stats::aggregate(xx$name ~ xx$calcfinal, data = xx, length))
-
       colnames(y) <- c("Type", "N")
       y$Percentage <- round((y$N/sum(y$N)), digits = 2) * 100
       y$Group <- ifelse((y$Type %in% paste(foo$fit)), "included", "excluded")
@@ -567,9 +561,7 @@ gdrate <- function(input, pval, plots) {
           # excluded cases not analyzed
           excl <- ip$excluded
           colnames(excl)[4] <- "N"
-          #exclm <- excl[complete.cases(excl), c("name", "calcfinal", "N")]
           exclm <- excl[stats::complete.cases(excl), c("name", "calcfinal", "N")]
-
           excl1 <- dim(exclm)[1]
           if (excl1 > 0) {
             excl2 <- exclm
@@ -603,7 +595,6 @@ gdrate <- function(input, pval, plots) {
 
           # descriptive stats by variable
           retAll <- function(vr, vc) {
-            #vals <- na.omit(vr)
             vals <- stats::na.omit(vr)
             lv <- length(vals)
             if (lv > 0) {
