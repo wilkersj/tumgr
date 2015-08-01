@@ -14,7 +14,7 @@ gdrate(input, pval, plots)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{input}{
-     A data frame containing patient tumor measurement data to be analyzed.  This data frame should consist of the following three columns (with respective column names):  "name" which contains a numeric value that uniquely identifies the patient for the respective row data. "date" which contains a numeric value for the day of evaluation for the respective row data, and "size" which contains the numeric value for the tumor quantity measurement (i.e., CT scan, PSA, CTN, CEA, etc.) for the respective row data.  Each row of data for a patient should have a unique day of evaluation
+     A data frame containing patient tumor measurement data to be analyzed.  This data frame should consist of the following three columns (with respective column names):  "name" which contains a numeric value that uniquely identifies the patient for the respective row data, "date" which contains a numeric value for the day of evaluation for the respective row data, and "size" which contains the numeric value for the tumor quantity measurement (i.e., CT scan, PSA, CTN, CEA, etc.) for the respective row data.  Each row of data for a patient should have a unique day of evaluation
 (i.e., if there are multiple lesions with measurements for a patient on a given day, then the sum of those measurments should be used as the value of tumor quantity in the "size" column for that day of evaluation).
 }
   \item{pval}{
