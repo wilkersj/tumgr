@@ -43,42 +43,42 @@ Patients with insufficient or missing data, or patients with sufficient data whe
 \value{
 \item{models}{Data frame summarizing included (by model type selected), and excluded (by reason for exclusion) cases. Columns are described below:
 \tabular{ll}{
-\tab * Group = indicator of included or excluded status\cr
-\tab * Analyzed = indicator of whether group was analyzed \cr
-\tab * Type = either selected model or reason for exclusion \cr
-\tab * N = number of cases \cr
-\tab * Percentage = percentage of cases \cr
+\tab - Group = indicator of included or excluded status\cr
+\tab - Analyzed = indicator of whether group was analyzed \cr
+\tab - Type = either selected model or reason for exclusion \cr
+\tab - N = number of cases \cr
+\tab - Percentage = percentage of cases \cr
 }}
 \item{sumstats}{Data frame containing descriptive statistics of growth rate results (N, median, IQR, mean and SD). Columns are described below:
 \tabular{ll}{
-\tab * Parameter = parameter for the row data\cr
-\tab * N = the number cases with parameter \cr
-\tab * Median = median of parameter \cr
-\tab * IQR = interquartile range of parameter \cr
-\tab * Mean = mean of parameter \cr
+\tab - Parameter = parameter for the row data\cr
+\tab - N = the number cases with parameter \cr
+\tab - Median = median of parameter \cr
+\tab - IQR = interquartile range of parameter \cr
+\tab - Mean = mean of parameter \cr
 }}
 \item{results}{Data frame containing growth rate results (g,d,phi), an indicator of included or excluded status, and the number of evaluations for individual patients.  Columns are described below:
 \tabular{ll}{
-\tab * name = the patient identifier\cr
-\tab * nobs = the number of data points analyzed \cr
-\tab * type = included or excluded status \cr
-\tab * selectedFit = model selected for patient \cr
-\tab * g = growth rate estimate \cr
-\tab * d = regression rate estimate \cr
-\tab * phi = phi estimate (proportion of tumor killed by treatment)\cr
+\tab - name = the patient identifier\cr
+\tab - nobs = the number of data points analyzed \cr
+\tab - type = included or excluded status \cr
+\tab - selectedFit = model selected for patient \cr
+\tab - g = growth rate estimate \cr
+\tab - d = regression rate estimate \cr
+\tab - phi = phi estimate (proportion of tumor killed by treatment)\cr
 }}
 \item{allest}{Data frame containing estimates (with respective SE, T value, and p-value) from all models that converged for each patient. Columns are described below:
 \tabular{ll}{
-\tab * name = the patient identifier\cr
-\tab * type = included or excluded status \cr
-\tab * selectedFit = model selected for patient \cr
-\tab * fit = model for the row data \cr
-\tab * parameter = parameter from the fit model \cr
-\tab * Estimate = estimated parameter value \cr
-\tab * StdError = standard error of the estimate \cr
-\tab * t.value = T value for the estimated value \cr
-\tab * p.value = p-value for the estimated value \cr
-\tab * N = number of data points analyzed \cr
+\tab - name = the patient identifier\cr
+\tab - type = included or excluded status \cr
+\tab - selectedFit = model selected for patient \cr
+\tab - fit = model for the row data \cr
+\tab - parameter = parameter from the fit model \cr
+\tab - Estimate = estimated parameter value \cr
+\tab - StdError = standard error of the estimate \cr
+\tab - t.value = T value for the estimated value \cr
+\tab - p.value = p-value for the estimated value \cr
+\tab - N = number of data points analyzed \cr
 }}
 }
 

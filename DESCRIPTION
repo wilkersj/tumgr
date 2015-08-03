@@ -11,3 +11,4 @@ Description: A tool to obtain tumor growth rates from clinical trial patient dat
 LazyData: true
 License: MIT + file LICENSE
 Suggests: testthat
+
