@@ -15,18 +15,19 @@ output:
 # Shiny app
 View the app [here](https://wilkersj.shinyapps.io/tumgrShiny) 
 
+
 # Installation
 To install the CRAN version:
 
-```{r, echo =TRUE} 
+```{r, eval = FALSE } 
 install.packages("tumgr")  
 ```
 
 
 To install the latest developmental version on GitHub:
-```{r, echo = TRUE}
-#install.packages("devtools")
-#devtools::install_github("wilkersj/tumgr")
+```{r, eval = FALSE}
+install.packages("devtools")
+devtools::install_github("wilkersj/tumgr")
 ```
 
 # Usage

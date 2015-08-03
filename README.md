@@ -20,19 +20,11 @@ To install the CRAN version:
 install.packages("tumgr")  
 ```
 
-    ## Installing package into 'C:/Users/Julia/Documents/R/win-library/3.2'
-    ## (as 'lib' is unspecified)
-
-    ## package 'tumgr' successfully unpacked and MD5 sums checked
-    ## 
-    ## The downloaded binary packages are in
-    ##  C:\Users\Julia\AppData\Local\Temp\RtmpoJE6E5\downloaded_packages
-
 To install the latest developmental version on GitHub:
 
 ``` r
-#install.packages("devtools")
-#devtools::install_github("wilkersj/tumgr")
+install.packages("devtools")
+devtools::install_github("wilkersj/tumgr")
 ```
 
 Usage
