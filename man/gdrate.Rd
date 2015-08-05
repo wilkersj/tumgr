@@ -1,7 +1,6 @@
 \name{gdrate}
 \alias{gdrate}
 \docType{package}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Tumor Growth Rate Analysis
 }
