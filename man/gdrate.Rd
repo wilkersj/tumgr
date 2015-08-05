@@ -11,7 +11,6 @@ Tumor Growth Rate Analysis
 \usage{
 gdrate(input, pval, plots)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{input}{
      A data frame containing patient tumor measurement data to be analyzed.  This data frame should consist of the following three columns (with respective column names):  "name" which contains a numeric value that uniquely identifies the patient for the respective row data, "date" which contains a numeric value for the day of evaluation for the respective row data, and "size" which contains the numeric value for the tumor quantity measurement (i.e., CT scan, PSA, CTN, CEA, etc.) for the respective row data.  Each row of data for a patient should have a unique day of evaluation
@@ -157,6 +156,6 @@ hist(res$d, col='blue', main=paste('Median d=', round(median(na.omit(res$d)), di
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ analysis }
-\keyword{ models }
-\keyword{ datagen }
+\keyword{analysis}
+\keyword{models}
+\keyword{datagen}

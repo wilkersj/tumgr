@@ -6,7 +6,7 @@ Date: 2015-07-20
 Author: Julia Wilkerson
 Maintainer: Julia Wilkerson <wilkersj@mail.nih.gov>
 URL: https://wilkersj.shinyapps.io/tumgrShiny, http://wilkersj.github.io/tumgr, https://github.com/wilkersj/tumgr
-Depends: R (>= 3.2.1), minpack.lm
+Depends: R (>= 3.1.0), minpack.lm
 Description: A tool to obtain tumor growth rates from clinical trial patient data.  Output includes individual and summary data for tumor growth rate estimates as well as optional plots of the observed and predicted tumor quantity over time.
 LazyData: true
 License: MIT + file LICENSE
