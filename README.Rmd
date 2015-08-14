@@ -40,12 +40,12 @@ library(tumgr)
 data(sampleData)
 
 # generate sample plots
-#par(mfrow=c(2, 3))
-#out <- gdrate(sampleData, 0.10, TRUE)
-#par(mfrow=c(1, 1))
+par(mfrow=c(2, 3))
+out <- gdrate(sampleData[18:67, ], 0.10, TRUE)
+par(mfrow=c(1, 1))
 
 # generate results with plots set to off
-out <- gdrate(sampleData, 0.10, FALSE)
+#out <- gdrate(sampleData, 0.10, FALSE)
 
 # summary of cases
 out$models
