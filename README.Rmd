@@ -46,7 +46,7 @@ par(mfrow=c(2, 3))
 out <- gdrate(sampleData[18:67, ], 0.10, TRUE)
 par(mfrow=c(1, 1))
 ```
-![Fig 1](https://github.com/wilkersj/tumgr/blob/master/unnamed-chunk-3-1.png)
+![Fig 1](https://github.com/wilkersj/tumgr/blob/master/tumorgrowthrateplots.png)
 
 ```{r, echo =TRUE}
 # generate results with plots set to off
