@@ -40,36 +40,40 @@ library(tumgr)
 ``` r
 # example data  
 data(sampleData)
-
-# generate sample plots
-par(mfrow=c(2, 3))
-out <- gdrate(sampleData[18:67, ], 0.10, TRUE)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+``` r
+# generate some sample plots
+par(mfrow=c(2, 3))
+out <- gdrate(sampleData[18:67, ], 0.10, TRUE)
+par(mfrow=c(1, 1))
+```
+
+![Fig 1](https://github.com/wilkersj/tumgr/blob/master/unnamed-chunk-3-1.png)
 
 ``` r
-par(mfrow=c(1, 1))
-
 # generate results with plots set to off
-#out <- gdrate(sampleData, 0.10, FALSE)
+out <- gdrate(sampleData, 0.10, FALSE)
 
 # summary of cases
 out$models
 ```
 
-    ##      Group Analyzed    Type N Percentage
-    ## 1 excluded      yes not fit 1         14
-    ## 2 included      yes      dx 1         14
-    ## 3 included      yes      gd 4         57
-    ## 4 included      yes   gdphi 1         14
+    ##      Group Analyzed                 Type  N Percentage
+    ## 1 excluded       no 2 evals not 20% diff  1          1
+    ## 2 excluded      yes              not fit  5          7
+    ## 3 excluded       no          only 1 eval  5          7
+    ## 4 included      yes                   dx 22         32
+    ## 5 included      yes                   gd 25         37
+    ## 6 included      yes                gdphi  6          9
+    ## 7 included      yes                   gx  4          6
 
 ``` r
 # descriptive statistics
 out$sumstats
 ```
 
-    ##   Parameter N   Median                  IQR     Mean       SD
-    ## 1         g 5  0.00119 (0.000493, 0.002723) 0.001852 0.001757
-    ## 2         d 6 0.034822 (0.027979, 0.038055)  0.03679 0.022872
-    ## 3       phi 1 0.549734 (0.549734, 0.549734) 0.549734     <NA>
+    ##   Parameter  N   Median                  IQR     Mean       SD
+    ## 1         g 35 0.001414 (0.000856, 0.003975) 0.003258 0.003956
+    ## 2         d 53 0.020427 (0.014466, 0.034447)    0.024 0.015579
+    ## 3       phi  6 0.987381 (0.866022, 0.997283) 0.891717 0.180361

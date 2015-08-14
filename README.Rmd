@@ -31,21 +31,26 @@ devtools::install_github("wilkersj/tumgr")
 ```
 
 # Usage
-```{r, echo =TRUE}  
+```{r, echo = TRUE, eval = TRUE}  
 
 # load library
 library(tumgr)
 
 # example data  
 data(sampleData)
+```
 
-# generate sample plots
+```{r, echo = TRUE, eval = FALSE}  
+# generate some sample plots
 par(mfrow=c(2, 3))
 out <- gdrate(sampleData[18:67, ], 0.10, TRUE)
 par(mfrow=c(1, 1))
+```
+![Fig 1](https://github.com/wilkersj/tumgr/blob/master/unnamed-chunk-3-1.png)
 
+```{r, echo =TRUE}
 # generate results with plots set to off
-#out <- gdrate(sampleData, 0.10, FALSE)
+out <- gdrate(sampleData, 0.10, FALSE)
 
 # summary of cases
 out$models
