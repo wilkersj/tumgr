@@ -118,17 +118,10 @@ Patients with insufficient or missing data, or patients with sufficient data whe
 }
 
 \author{
-Julia Wilkerson \email{ wilkersj@mail.nih.gov }
+%%Julia Wilkerson \email{ wilkersj@mail.nih.gov }
+Julia Wilkerson \email{jmwilkers@outlook.com}
 }
-%%\note{
-%%  ~~further notes~~
-%%}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-%% \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-%% }
 \examples{
 
 # example data
@@ -150,7 +143,7 @@ res <- out$results
 par(mfrow=c(2,1))
 hist(res$g, col='blue', main=paste('Median g=', round(median(na.omit(res$g)), digits=6)), xlab="g")
 hist(res$d, col='blue', main=paste('Median d=', round(median(na.omit(res$d)), digits=6)), xlab="d")
-
+par(mfrow=c(1,1))
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

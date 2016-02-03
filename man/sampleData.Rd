@@ -21,11 +21,8 @@ Sample of control arm data for package examples from a phase 3, randomized, open
 \source{
 Project Data Sphere (sponsor Novacea, Inc). \url{https://www.projectdatasphere.org/projectdatasphere/html/content/89}
 }
-%%\references{
-%%  ~~ possibly secondary sources and usages ~~
-%%}
 \examples{
 data(sampleData)
-%%%%## maybe str(sampleData) ; plot(sampleData) ...
+str(sampleData)
 }
 \keyword{datasets}
