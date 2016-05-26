@@ -1,6 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)](https://travis-ci.org/wilkersj/tumgr) [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tumgr)](http://cran.r-project.org/package=tumgr)
-[![](http://cranlogs.r-pkg.org/badges/tumgr)](http://cran.rstudio.com/web/packages/tumgr/index.html)
+
 
 tumgr
 =====
@@ -10,7 +10,7 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Shiny app
 =========
 
-View the app [here](https://wilkersj.shinyapps.io/tumgrShiny)
+View the app [here](https://wilkersj.shinyapps.io/tumorgrowth)
 
 Installation
 ============
