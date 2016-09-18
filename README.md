@@ -1,6 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)](https://travis-ci.org/wilkersj/tumgr) [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tumgr)](http://cran.r-project.org/package=tumgr)
-
+[![Build Status](https://travis-ci.org/wilkersj/tumgr.svg?branch=master)](https://travis-ci.org/wilkersj/tumgr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tumgr)](http://cran.r-project.org/package=tumgr)
 
 tumgr
 =====
@@ -10,7 +9,7 @@ tumgr is a tool to obtain tumor growth rates from clinical trial patient data. O
 Shiny app
 =========
 
-View the app [here](https://wilkersj.shinyapps.io/tumorgrowth)
+View the app [here](https://wilkersj.shinyapps.io/tumgrShiny)
 
 Installation
 ============
@@ -35,6 +34,8 @@ Usage
 # load library
 library(tumgr)
 ```
+
+    ## Warning: package 'tumgr' was built under R version 3.3.1
 
     ## Loading required package: minpack.lm
 

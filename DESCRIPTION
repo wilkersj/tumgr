@@ -1,8 +1,8 @@
 Package: tumgr
 Type: Package
 Title: Tumor Growth Rate Analysis
-Version: 0.0.4
-Date: 2016-02-03
+Version: 0.0.5
+Date: 2016-09-16
 Author: Julia Wilkerson
 Maintainer: Julia Wilkerson <jmwilkers@outlook.com>
 URL: https://wilkersj.shinyapps.io/tumgrShiny, http://wilkersj.github.io/tumgr, https://github.com/wilkersj/tumgr
